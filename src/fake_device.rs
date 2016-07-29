@@ -1,18 +1,17 @@
 use fake_adapter::FakeBluetoothAdapter;
+use fake_service::FakeBluetoothGATTService;
 use std::cell::{Cell, RefCell};
-use rustc_serialize::hex::FromHex;
-use core::ops::Deref;
 use std::error::Error;
 
 #[derive(Clone, Debug)]
 pub struct FakeBluetoothDevice {
-    object_path: String,
-    adapter: RefCell<Option<FakeBluetoothAdapter>>,
+    object_path: RefCell<String>,
+    adapter: RefCell<FakeBluetoothAdapter>,
     address: RefCell<String>,
     appearance: Cell<u16>,
     //connectionError: Cell<u32>,
     //deviceClass: Cell<u32>,
-    gattServices: RefCell<Vec<String>>,
+    gattServices: RefCell<Vec<FakeBluetoothGATTService>>,
     //isPaired: Cell<bool>,
     isConnectable: Cell<bool>,
     isConnected: Cell<bool>,
@@ -36,7 +35,7 @@ impl FakeBluetoothDevice {
                appearance: u16,
                //connectionError: u32,
                //deviceClass: u32,
-               gattServices: Vec<String>,
+               gattServices: Vec<FakeBluetoothGATTService>,
                //isPaired: bool,
                isConnectable: bool,
                isConnected: bool,
@@ -54,8 +53,8 @@ impl FakeBluetoothDevice {
                )
                -> FakeBluetoothDevice {
         FakeBluetoothDevice{
-            object_path: object_path,
-            adapter: RefCell::new(Some(adapter)),
+            object_path: RefCell::new(object_path),
+            adapter: RefCell::new(adapter),
             address: RefCell::new(address),
             appearance: Cell::new(appearance),
             //connectionError: Cell::new(connectionError),
@@ -78,10 +77,10 @@ impl FakeBluetoothDevice {
         }
     }
 
-    pub fn new_empty(object_path: String) -> FakeBluetoothDevice {
+    pub fn new_empty() -> FakeBluetoothDevice {
         FakeBluetoothDevice{
-            object_path: object_path,
-            adapter: RefCell::new(None),
+            object_path: RefCell::new(String::new()),
+            adapter: RefCell::new(FakeBluetoothAdapter::new_empty()),
             address: RefCell::new(String::new()),
             appearance: Cell::new(0),
             //connectionError: Cell::new(0),
@@ -105,18 +104,19 @@ impl FakeBluetoothDevice {
     }
 
     pub fn get_object_path(&self) -> String {
-        self.object_path.clone()
+        self.object_path.borrow().clone()
     }
 
-    pub fn get_adapter(&self) -> Result<FakeBluetoothAdapter, Box<Error>> {
-        match self.adapter.borrow().clone() {
-            Some(adapter) => return Ok(adapter),
-            None => return Err(Box::from("Device has no adapter."))
-        }
+    pub fn set_object_path(&mut self, path: String) {
+        *self.object_path.borrow_mut() = path;
+    }
+
+    pub fn get_adapter(&self) -> FakeBluetoothAdapter {
+        self.adapter.borrow().clone()
     }
 
     pub fn set_adapter(&mut self, adapter: FakeBluetoothAdapter) {
-        *self.adapter.borrow_mut() = Some(adapter);
+        *self.adapter.borrow_mut() = adapter;
     }
 
 
@@ -152,14 +152,12 @@ impl FakeBluetoothDevice {
         self.deviceClass.set(value);
     }*/
 
-    pub fn get_gatt_services(&self) -> Vec<String> {
+    pub fn get_gatt_services(&self) -> Vec<FakeBluetoothGATTService> {
         self.gattServices.borrow().clone()
     }
 
-    pub fn push_gatt_service(&mut self, services: Vec<String>) {
-        for service in services {
-            self.gattServices.borrow_mut().push(service);
-        }
+    pub fn set_gatt_service(&mut self, services: Vec<FakeBluetoothGATTService>) {
+        *self.gattServices.borrow_mut() = services;
     }
 
     /*pub fn is_paired(&self) -> bool {
@@ -207,9 +205,7 @@ impl FakeBluetoothDevice {
     }
 
     pub fn set_uuids(&mut self, uuids: Vec<String>) {
-        for uuid in uuids {
-            self.uuids.borrow_mut().push(uuid);
-        }
+        *self.uuids.borrow_mut() = uuids;
     }
 
     pub fn get_name(&self) -> String {
@@ -269,7 +265,6 @@ impl FakeBluetoothDevice {
     }*/
 
     pub fn connect(&mut self) -> Result<(), Box<Error>> {
-        // TODO: result-al térjen vissza, ha 
         if self.isConnectable.get() && !self.isConnected.get() {
             self.isConnected.set(true);
             return Ok(());

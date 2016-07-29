@@ -1,7 +1,6 @@
 use fake_device::FakeBluetoothDevice;
 use std::cell::{Cell, RefCell};
 use std::error::Error;
-use rustc_serialize::hex::FromHex;
 
 #[derive(Clone, Debug)]
 pub struct FakeBluetoothAdapter {
@@ -98,10 +97,8 @@ impl FakeBluetoothAdapter {
         self.devices.borrow().clone()
     }
 
-    pub fn push_devices(&mut self, devices: Vec<FakeBluetoothDevice>){
-        for device in devices {
-            self.devices.borrow_mut().push(device);
-        }
+    pub fn set_devices(&mut self, devices: Vec<FakeBluetoothDevice>){
+        *self.devices.borrow_mut() = devices;
     }
 
     pub fn get_first_device(&self) -> Result<FakeBluetoothDevice, Box<Error>> {
@@ -116,9 +113,7 @@ impl FakeBluetoothAdapter {
     }
 
     pub fn set_addatas(&mut self, addatas: Vec<String>) {
-        for addata in addatas {
-            self.addatas.borrow_mut().push(addata);
-        }
+        *self.addatas.borrow_mut() = addatas;
     }
 
     pub fn get_first_addata(&self) -> Result<String, Box<Error>> {
