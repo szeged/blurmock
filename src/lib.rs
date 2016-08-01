@@ -4,3 +4,4 @@ extern crate core;
 pub mod fake_adapter;
 pub mod fake_device;
 pub mod fake_service;
+pub mod fake_characteristic;
