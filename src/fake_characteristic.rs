@@ -1,3 +1,4 @@
+use fake_descriptor::FakeBluetoothGATTDescriptor;
 use fake_service::FakeBluetoothGATTService;
 use std::cell::{Cell, RefCell};
 
@@ -9,7 +10,7 @@ pub struct FakeBluetoothGATTCharacteristic {
     value: RefCell<Vec<u8>>,
     isNotifying: Cell<bool>,
     flags: RefCell<Vec<String>>,
-    descriptors: RefCell<Vec<String>>,
+    descriptors: RefCell<Vec<FakeBluetoothGATTDescriptor>>,
 }
 
 impl FakeBluetoothGATTCharacteristic {
@@ -19,7 +20,7 @@ impl FakeBluetoothGATTCharacteristic {
 		       value: Vec<u8>,
 		       isNotifying: bool,
 		       flags: Vec<String>,
-		       descriptors: Vec<String>)
+		       descriptors: Vec<FakeBluetoothGATTDescriptor>)
                -> FakeBluetoothGATTCharacteristic {
         FakeBluetoothGATTCharacteristic {
             object_path: RefCell::new(object_path),
@@ -92,11 +93,11 @@ impl FakeBluetoothGATTCharacteristic {
         *self.flags.borrow_mut() = flags;
     }
 
-    pub fn get_descriptors(&self) -> Vec<String> {
+    pub fn get_descriptors(&self) -> Vec<FakeBluetoothGATTDescriptor> {
         self.descriptors.borrow().clone()
     }
 
-    pub fn set_descriptors(&mut self, descriptors: Vec<String>) {
+    pub fn set_descriptors(&mut self, descriptors: Vec<FakeBluetoothGATTDescriptor>) {
         *self.descriptors.borrow_mut() = descriptors;
     }
 
