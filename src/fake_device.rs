@@ -136,22 +136,6 @@ impl FakeBluetoothDevice {
         self.appearance.set(value);
     }
 
-    /*pub fn get_connection_error(&self) -> u32 {
-        self.connectionError.get()
-    }
-
-    pub fn set_connection_error(&mut self, value: u32) {
-        self.connectionError.set(value);
-    }*/
-
-    /*pub fn get_device_class(&self) -> u32 {
-        self.deviceClass.get()
-    }
-
-    pub fn set_device_class(&mut self, value: u32) {
-        self.deviceClass.set(value);
-    }*/
-
     pub fn get_gatt_services(&self) -> Vec<FakeBluetoothGATTService> {
         self.gattServices.borrow().clone()
     }
@@ -159,14 +143,6 @@ impl FakeBluetoothDevice {
     pub fn set_gatt_service(&mut self, services: Vec<FakeBluetoothGATTService>) {
         *self.gattServices.borrow_mut() = services;
     }
-
-    /*pub fn is_paired(&self) -> bool {
-        self.isPaired.get()
-    }
-
-    pub fn set_paired(&mut self, value: bool) {
-        self.isPaired.set(value);
-    }*/
 
     pub fn is_connected(&self) -> bool {
         self.isConnected.get()
@@ -176,14 +152,6 @@ impl FakeBluetoothDevice {
         self.isConnected.set(value);
     }
 
-    /*pub fn is_trusted(&self) -> bool {
-        self.isTrusted.get()
-    }
-
-    pub fn set_trusted(&mut self, value: bool) {
-        self.isTrusted.set(value);
-    }*/
-
     pub fn is_blocked(&self) -> bool {
         self.isBlocked.get()
     }
@@ -191,14 +159,6 @@ impl FakeBluetoothDevice {
     pub fn set_blocked(&mut self, value: bool) {
         self.isBlocked.set(value);
     }
-
-    /*pub fn is_legacy_pairing(&self) -> bool {
-        self.isLegacyPairing.get()
-    }
-
-    pub fn set_legacy_pairing(&mut self, value: bool) {
-        self.isLegacyPairing.set(value);
-    }*/
 
     pub fn get_uuids(&self) -> Vec<String> {
         self.uuids.borrow().clone()
@@ -216,22 +176,6 @@ impl FakeBluetoothDevice {
         *self.name.borrow_mut() = name;
     }
 
-    /*pub fn get_product_id(&self) -> u32 {
-        self.productId.get()
-    }
-
-    pub fn set_product_id(&mut self, value: u32) {
-        self.productId.set(value);
-    }
-
-    pub fn get_product_version(&self) -> u32 {
-        self.productVersion.get()
-    }
-
-    pub fn set_product_version(&mut self, value: u32) {
-        self.productVersion.set(value);
-    }*/
-
     pub fn get_rssi(&self) -> i16 {
         self.rssi.get()
     }
@@ -247,22 +191,6 @@ impl FakeBluetoothDevice {
     pub fn set_tx_power(&mut self, value: i16) {
         self.txPower.set(value);
     }
-
-    /*pub fn get_vendor_id(&self) -> u32 {
-        self.vendorId.get()
-    }
-
-    pub fn set_vendor_id(&mut self, value: u32) {
-        self.vendorId.set(value);
-    }
-
-    pub fn get_vendor_id_source(&self) -> String {
-        self.vendorIdSource.borrow().clone()
-    }
-
-    pub fn set_vendor_id_source(&mut self, value: String) {
-        *self.vendorIdSource.borrow_mut() = value;
-    }*/
 
     pub fn connect(&mut self) -> Result<(), Box<Error>> {
         if self.isConnectable.get() && !self.isConnected.get() {
