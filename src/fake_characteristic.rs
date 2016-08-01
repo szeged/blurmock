@@ -105,7 +105,8 @@ impl FakeBluetoothGATTCharacteristic {
     	self.get_value()
     }
 
-    pub fn write_value(&self) -> Result<(),()> {
+    pub fn write_value(&self, value: Vec<u8>) -> Result<(),()> {
+    	*self.value.borrow_mut() = value;
     	Ok(())
     }
 }
