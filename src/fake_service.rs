@@ -8,6 +8,7 @@ pub struct FakeBluetoothGATTService {
     device: RefCell<FakeBluetoothDevice>,
     gattCharacteristics: RefCell<Vec<FakeBluetoothGATTCharacteristic>>,
     isPrimary: Cell<bool>,
+    includedServices: RefCell<Vec<FakeBluetoothGATTService>>,
     uuid: RefCell<String>,
 }
 
@@ -16,6 +17,7 @@ impl FakeBluetoothGATTService {
                device: FakeBluetoothDevice,
                gattCharacteristics: Vec<FakeBluetoothGATTCharacteristic>,
                isPrimary: bool,
+               includedServices: Vec<FakeBluetoothGATTService>,
                uuid: String)
                -> FakeBluetoothGATTService {
         FakeBluetoothGATTService {
@@ -23,6 +25,7 @@ impl FakeBluetoothGATTService {
             device: RefCell::new(device),
             gattCharacteristics: RefCell::new(gattCharacteristics),
             isPrimary: Cell::new(isPrimary),
+            includedServices: RefCell::new(includedServices),
             uuid: RefCell::new(uuid),
         }
     }
@@ -33,6 +36,7 @@ impl FakeBluetoothGATTService {
             device: RefCell::new(FakeBluetoothDevice::new_empty()),
             gattCharacteristics: RefCell::new(vec![]),
             isPrimary: Cell::new(false),
+            includedServices: RefCell::new(vec![]),
             uuid: RefCell::new(String::new()),
         }
     }
@@ -67,6 +71,14 @@ impl FakeBluetoothGATTService {
 
     pub fn set_is_primary(&mut self, value: bool) {
         self.isPrimary.set(value);
+    }
+
+    pub fn get_included_services(&self) -> Vec<FakeBluetoothGATTService> {
+        self.includedServices.borrow().clone()
+    }
+
+    pub fn set_included_services(&mut self, includedServices: Vec<FakeBluetoothGATTService>) {
+        *self.includedServices.borrow_mut() = includedServices;
     }
 
     pub fn get_uuid(&self) -> String {
