@@ -40,17 +40,17 @@ impl FakeBluetoothAdapter {
     }
 
     pub fn new_empty() -> FakeBluetoothAdapter {
-    	FakeBluetoothAdapter {
+        FakeBluetoothAdapter {
             object_path: RefCell::new(String::new()),
             isPresent: Cell::new(false),
-    		isPowered: Cell::new(false),
-    		canStartDiscovery: Cell::new(false),
-    		canStopDiscovery: Cell::new(false),
+            isPowered: Cell::new(false),
+            canStartDiscovery: Cell::new(false),
+            canStopDiscovery: Cell::new(false),
             devices: RefCell::new(vec![]),
             addatas: RefCell::new(vec![]),
             address: RefCell::new(String::new()),
             name: RefCell::new(String::new()),
-    	}
+        }
     }
 
     pub fn get_id(&self) -> String {

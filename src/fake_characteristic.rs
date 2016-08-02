@@ -16,11 +16,11 @@ pub struct FakeBluetoothGATTCharacteristic {
 impl FakeBluetoothGATTCharacteristic {
     pub fn new(object_path: String,
                uuid: String,
-		       service: FakeBluetoothGATTService,
-		       value: Vec<u8>,
-		       isNotifying: bool,
-		       flags: Vec<String>,
-		       descriptors: Vec<FakeBluetoothGATTDescriptor>)
+               service: FakeBluetoothGATTService,
+               value: Vec<u8>,
+               isNotifying: bool,
+               flags: Vec<String>,
+               descriptors: Vec<FakeBluetoothGATTDescriptor>)
                -> FakeBluetoothGATTCharacteristic {
         FakeBluetoothGATTCharacteristic {
             object_path: RefCell::new(object_path),
@@ -102,11 +102,10 @@ impl FakeBluetoothGATTCharacteristic {
     }
 
     pub fn read_value(&self) -> Vec<u8> {
-    	self.get_value()
+        self.get_value()
     }
 
-    pub fn write_value(&self, value: Vec<u8>) -> Result<(),()> {
-    	*self.value.borrow_mut() = value;
-    	Ok(())
+    pub fn write_value(&self, value: Vec<u8>) {
+        *self.value.borrow_mut() = value;
     }
 }
