@@ -2,6 +2,7 @@ use fake_device::FakeBluetoothDevice;
 use fake_discovery_session::FakeBluetoothDiscoverySession;
 use std::cell::{Cell, RefCell};
 use std::error::Error;
+use std::sync::Arc;
 
 #[derive(Clone, Debug)]
 pub struct FakeBluetoothAdapter {
@@ -141,6 +142,6 @@ impl FakeBluetoothAdapter {
     }
 
     pub fn create_discovery_session(&self) -> Result<FakeBluetoothDiscoverySession, Box<Error>> {
-        FakeBluetoothDiscoverySession::create_session(self.clone())
+        FakeBluetoothDiscoverySession::create_session(Arc::new(self.clone()))
     }
 }
