@@ -1,6 +1,7 @@
 use fake_characteristic::FakeBluetoothGATTCharacteristic;
 use fake_device::FakeBluetoothDevice;
 use std::cell::{Cell, RefCell};
+use std::error::Error;
 
 #[derive(Clone, Debug)]
 pub struct FakeBluetoothGATTService {
@@ -49,40 +50,40 @@ impl FakeBluetoothGATTService {
         *self.object_path.borrow_mut() = path;
     }
 
-    pub fn get_device(&self) -> FakeBluetoothDevice {
-        self.device.borrow().clone()
+    pub fn get_device(&self) -> Result<FakeBluetoothDevice, Box<Error>> {
+        Ok(self.device.borrow().clone())
     }
 
     pub fn set_device(&mut self, device: FakeBluetoothDevice) {
         *self.device.borrow_mut() = device;
     }
 
-    pub fn get_gatt_characteristics(&self) -> Vec<FakeBluetoothGATTCharacteristic> {
-        self.gattCharacteristics.borrow().clone()
+    pub fn get_gatt_characteristics(&self) -> Result<Vec<FakeBluetoothGATTCharacteristic>, Box<Error>> {
+        Ok(self.gattCharacteristics.borrow().clone())
     }
 
     pub fn set_gatt_characteristics(&mut self, characteristics: Vec<FakeBluetoothGATTCharacteristic>) {
         *self.gattCharacteristics.borrow_mut() = characteristics;
     }
 
-    pub fn is_primary(&self) -> bool {
-        self.isPrimary.get()
+    pub fn is_primary(&self) -> Result<bool, Box<Error>> {
+        Ok(self.isPrimary.get())
     }
 
     pub fn set_is_primary(&mut self, value: bool) {
         self.isPrimary.set(value);
     }
 
-    pub fn get_included_services(&self) -> Vec<FakeBluetoothGATTService> {
-        self.includedServices.borrow().clone()
+    pub fn get_included_services(&self) -> Result<Vec<FakeBluetoothGATTService>, Box<Error>> {
+        Ok(self.includedServices.borrow().clone())
     }
 
     pub fn set_included_services(&mut self, includedServices: Vec<FakeBluetoothGATTService>) {
         *self.includedServices.borrow_mut() = includedServices;
     }
 
-    pub fn get_uuid(&self) -> String {
-        self.uuid.borrow().clone()
+    pub fn get_uuid(&self) -> Result<String, Box<Error>> {
+        Ok(self.uuid.borrow().clone())
     }
 
     pub fn set_uuid(&mut self, uuid: String) {

@@ -1,6 +1,7 @@
 use fake_descriptor::FakeBluetoothGATTDescriptor;
 use fake_service::FakeBluetoothGATTService;
 use std::cell::{Cell, RefCell};
+use std::error::Error;
 
 #[derive(Clone, Debug)]
 pub struct FakeBluetoothGATTCharacteristic {
@@ -53,59 +54,60 @@ impl FakeBluetoothGATTCharacteristic {
         *self.object_path.borrow_mut() = path;
     }
 
-    pub fn get_uuid(&self) -> String {
-        self.uuid.borrow().clone()
+    pub fn get_uuid(&self) -> Result<String, Box<Error>> {
+        Ok(self.uuid.borrow().clone())
     }
 
     pub fn set_uuid(&mut self, uuid: String) {
         *self.uuid.borrow_mut() = uuid;
     }
 
-    pub fn get_service(&self) -> FakeBluetoothGATTService {
-        self.service.borrow().clone()
+    pub fn get_service(&self) -> Result<FakeBluetoothGATTService, Box<Error>> {
+        Ok(self.service.borrow().clone())
     }
 
     pub fn set_service(&mut self, service: FakeBluetoothGATTService) {
         *self.service.borrow_mut() = service;
     }
 
-    pub fn get_value(&self) -> Vec<u8> {
-        self.value.borrow().clone()
+    pub fn get_value(&self) -> Result<Vec<u8>, Box<Error>> {
+        Ok(self.value.borrow().clone())
     }
 
     pub fn set_value(&mut self, value: Vec<u8>) {
         *self.value.borrow_mut() = value;
     }
 
-    pub fn is_notifying(&self) -> bool {
-        self.isNotifying.get()
+    pub fn is_notifying(&self) -> Result<bool, Box<Error>> {
+        Ok(self.isNotifying.get())
     }
 
     pub fn set_is_notifying(&mut self, value: bool) {
         self.isNotifying.set(value);
     }
 
-    pub fn get_flags(&self) -> Vec<String> {
-        self.flags.borrow().clone()
+    pub fn get_flags(&self) -> Result<Vec<String>, Box<Error>> {
+        Ok(self.flags.borrow().clone())
     }
 
     pub fn set_flags(&mut self, flags: Vec<String>) {
         *self.flags.borrow_mut() = flags;
     }
 
-    pub fn get_descriptors(&self) -> Vec<FakeBluetoothGATTDescriptor> {
-        self.descriptors.borrow().clone()
+    pub fn get_descriptors(&self) -> Result<Vec<FakeBluetoothGATTDescriptor>, Box<Error>> {
+        Ok(self.descriptors.borrow().clone())
     }
 
     pub fn set_descriptors(&mut self, descriptors: Vec<FakeBluetoothGATTDescriptor>) {
         *self.descriptors.borrow_mut() = descriptors;
     }
 
-    pub fn read_value(&self) -> Vec<u8> {
+    pub fn read_value(&self) -> Result<Vec<u8>, Box<Error>> {
         self.get_value()
     }
 
-    pub fn write_value(&self, value: Vec<u8>) {
+    pub fn write_value(&self, value: Vec<u8>) -> Result<(), Box<Error>> {
         *self.value.borrow_mut() = value;
+        Ok(())
     }
 }

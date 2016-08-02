@@ -1,9 +1,6 @@
 use fake_adapter::FakeBluetoothAdapter;
 use std::error::Error;
 
-static ADAPTER_INTERFACE: &'static str = "org.bluez.Adapter1";
-static SERVICE_NAME: &'static str = "org.bluez";
-
 #[derive(Debug)]
 pub struct FakeBluetoothDiscoverySession {
     adapter: FakeBluetoothAdapter,

@@ -111,8 +111,8 @@ impl FakeBluetoothDevice {
         *self.object_path.borrow_mut() = path;
     }
 
-    pub fn get_adapter(&self) -> FakeBluetoothAdapter {
-        self.adapter.borrow().clone()
+    pub fn get_adapter(&self) -> Result<FakeBluetoothAdapter, Box<Error>> {
+        Ok(self.adapter.borrow().clone())
     }
 
     pub fn set_adapter(&mut self, adapter: FakeBluetoothAdapter) {
@@ -120,79 +120,79 @@ impl FakeBluetoothDevice {
     }
 
 
-    pub fn get_address(&self) -> String {
-        self.address.borrow().clone()
+    pub fn get_address(&self) -> Result<String, Box<Error>> {
+        Ok(self.address.borrow().clone())
     }
 
     pub fn set_address(&mut self, address: String) {
         *self.address.borrow_mut() = address;
     }
 
-    pub fn get_appearance(&self) -> u16 {
-        self.appearance.get()
+    pub fn get_appearance(&self) -> Result<u16, Box<Error>> {
+        Ok(self.appearance.get())
     }
 
     pub fn set_appearance(&mut self, value: u16) {
         self.appearance.set(value);
     }
 
-    pub fn get_gatt_services(&self) -> Vec<FakeBluetoothGATTService> {
-        self.gattServices.borrow().clone()
+    pub fn get_gatt_services(&self) -> Result<Vec<FakeBluetoothGATTService>, Box<Error>> {
+        Ok(self.gattServices.borrow().clone())
     }
 
     pub fn set_gatt_service(&mut self, services: Vec<FakeBluetoothGATTService>) {
         *self.gattServices.borrow_mut() = services;
     }
 
-    pub fn is_connected(&self) -> bool {
-        self.isConnected.get()
+    pub fn is_connected(&self) -> Result<bool, Box<Error>> {
+        Ok(self.isConnected.get())
     }
 
     pub fn set_connected(&mut self, value: bool) {
         self.isConnected.set(value);
     }
 
-    pub fn is_blocked(&self) -> bool {
-        self.isBlocked.get()
+    pub fn is_blocked(&self) -> Result<bool, Box<Error>> {
+        Ok(self.isBlocked.get())
     }
 
     pub fn set_blocked(&mut self, value: bool) {
         self.isBlocked.set(value);
     }
 
-    pub fn get_uuids(&self) -> Vec<String> {
-        self.uuids.borrow().clone()
+    pub fn get_uuids(&self) -> Result<Vec<String>, Box<Error>> {
+        Ok(self.uuids.borrow().clone())
     }
 
     pub fn set_uuids(&mut self, uuids: Vec<String>) {
         *self.uuids.borrow_mut() = uuids;
     }
 
-    pub fn get_name(&self) -> String {
-        self.name.borrow().clone()
+    pub fn get_name(&self) -> Result<String, Box<Error>> {
+        Ok(self.name.borrow().clone())
     }
 
     pub fn set_name(&mut self, name: String) {
         *self.name.borrow_mut() = name;
     }
 
-    pub fn get_rssi(&self) -> i16 {
-        self.rssi.get()
+    pub fn get_rssi(&self) -> Result<i16, Box<Error>> {
+        Ok(self.rssi.get())
     }
 
     pub fn set_rssi(&mut self, value: i16) {
         self.rssi.set(value);
     }
 
-    pub fn get_tx_power(&self) -> i16 {
-        self.txPower.get()
+    pub fn get_tx_power(&self) -> Result<i16, Box<Error>> {
+        Ok(self.txPower.get())
     }
 
     pub fn set_tx_power(&mut self, value: i16) {
         self.txPower.set(value);
     }
 
-    pub fn connect(&mut self) -> Result<(), Box<Error>> {
+    pub fn connect(&self) -> Result<(), Box<Error>> {
         if self.isConnectable.get() && !self.isConnected.get() {
             self.isConnected.set(true);
             return Ok(());
@@ -201,7 +201,7 @@ impl FakeBluetoothDevice {
         }
     }
 
-    pub fn disconnect(&mut self) -> Result<(), Box<Error>>{
+    pub fn disconnect(&self) -> Result<(), Box<Error>>{
         if self.isConnected.get() {
             self.isConnected.set(false);
             return Ok(());

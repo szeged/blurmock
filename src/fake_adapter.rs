@@ -62,40 +62,40 @@ impl FakeBluetoothAdapter {
         *self.object_path.borrow_mut() = value;
     }
 
-    pub fn is_present(&self) -> bool {
-        self.isPresent.get()
+    pub fn is_present(&self) -> Result<bool, Box<Error>> {
+        Ok(self.isPresent.get())
     }
 
     pub fn set_present(&mut self, value: bool) {
         self.isPresent.set(value);
     }
 
-    pub fn is_powered(&self) -> bool {
-        self.isPowered.get()
+    pub fn is_powered(&self) -> Result<bool, Box<Error>> {
+        Ok(self.isPowered.get())
     }
 
-    pub fn set_powered(&mut self, value: bool) -> () {
+    pub fn set_powered(&mut self, value: bool) {
         self.isPowered.set(value)
     }
 
-    pub fn get_can_start_discovery(&self) -> bool {
-        self.canStartDiscovery.get()
+    pub fn get_can_start_discovery(&self) -> Result<bool, Box<Error>> {
+        Ok(self.canStartDiscovery.get())
     }
 
     pub fn set_can_start_discovery(&mut self, value: bool) {
         self.canStartDiscovery.set(value);
     }
 
-    pub fn get_can_stop_siscovery(&self) -> bool {
-        self.canStopDiscovery.get()
+    pub fn get_can_stop_siscovery(&self) -> Result<bool, Box<Error>> {
+        Ok(self.canStopDiscovery.get())
     }
 
     pub fn set_can_stop_discovery(&mut self, value: bool) {
         self.canStopDiscovery.set(value);
     }
 
-    pub fn get_devices(&self) -> Vec<FakeBluetoothDevice> {
-        self.devices.borrow().clone()
+    pub fn get_devices(&self) -> Result<Vec<FakeBluetoothDevice>, Box<Error>> {
+        Ok(self.devices.borrow().clone())
     }
 
     pub fn set_devices(&mut self, devices: Vec<FakeBluetoothDevice>){
@@ -109,8 +109,8 @@ impl FakeBluetoothAdapter {
         Ok(self.devices.borrow()[0].clone())
     }
 
-    pub fn get_addatas(&self) -> Vec<String> {
-        self.addatas.borrow().clone()
+    pub fn get_addatas(&self) -> Result<Vec<String>, Box<Error>> {
+        Ok(self.addatas.borrow().clone())
     }
 
     pub fn set_addatas(&mut self, addatas: Vec<String>) {
@@ -124,16 +124,16 @@ impl FakeBluetoothAdapter {
         Ok(self.addatas.borrow()[0].clone())
     }
 
-    pub fn get_address(&self) -> String {
-        self.address.borrow().clone()
+    pub fn get_address(&self) -> Result<String, Box<Error>> {
+        Ok(self.address.borrow().clone())
     }
 
     pub fn set_address(&mut self, address: String) {
         *self.address.borrow_mut() = address;
     }
 
-    pub fn get_name(&self) -> String {
-        self.name.borrow().clone()
+    pub fn get_name(&self) -> Result<String, Box<Error>> {
+        Ok(self.name.borrow().clone())
     }
 
     pub fn set_name(&mut self, name: String) {
