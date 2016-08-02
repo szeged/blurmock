@@ -37,11 +37,11 @@ impl FakeBluetoothGATTDescriptor {
         }
     }
 
-    pub fn get_object_path(&self) -> String {
+    pub fn get_id(&self) -> String {
         self.object_path.borrow().clone()
     }
 
-    pub fn set_object_path(&mut self, path: String) {
+    pub fn set_id(&mut self, path: String) {
         *self.object_path.borrow_mut() = path;
     }
 
