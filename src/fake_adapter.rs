@@ -1,4 +1,5 @@
 use fake_device::FakeBluetoothDevice;
+use fake_discovery_session::FakeBluetoothDiscoverySession;
 use std::cell::{Cell, RefCell};
 use std::error::Error;
 
@@ -137,5 +138,9 @@ impl FakeBluetoothAdapter {
 
     pub fn set_name(&mut self, name: String) {
         *self.name.borrow_mut() = name;
+    }
+
+    pub fn create_discovery_session(&self) -> Result<FakeBluetoothDiscoverySession, Box<Error>> {
+        FakeBluetoothDiscoverySession::create_session(self.clone())
     }
 }

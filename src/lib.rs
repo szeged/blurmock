@@ -6,3 +6,4 @@ pub mod fake_device;
 pub mod fake_service;
 pub mod fake_characteristic;
 pub mod fake_descriptor;
+pub mod fake_discovery_session;
