@@ -11,19 +11,19 @@ pub struct FakeBluetoothDevice {
     appearance: Cell<u16>,
     //connectionError: Cell<u32>,
     //deviceClass: Cell<u32>,
-    gattServices: RefCell<Vec<FakeBluetoothGATTService>>,
+    gatt_services: RefCell<Vec<FakeBluetoothGATTService>>,
     //isPaired: Cell<bool>,
-    isConnectable: Cell<bool>,
-    isConnected: Cell<bool>,
+    is_connectable: Cell<bool>,
+    is_connected: Cell<bool>,
     //isTrusted: Cell<bool>,
-    isBlocked: Cell<bool>,
+    is_blocked: Cell<bool>,
     //isLegacyPairing: Cell<bool>,
     uuids: RefCell<Vec<String>>,
     name: RefCell<String>,
     //productId: Cell<u32>,
     //productVersion: Cell<u32>,
     rssi: Cell<i16>,
-    txPower: Cell<i16>,
+    tx_power: Cell<i16>,
     //vendorId: Cell<u32>,
     //vendorIdSource: RefCell<String>,
 }
@@ -35,19 +35,19 @@ impl FakeBluetoothDevice {
                appearance: u16,
                //connectionError: u32,
                //deviceClass: u32,
-               gattServices: Vec<FakeBluetoothGATTService>,
+               gatt_services: Vec<FakeBluetoothGATTService>,
                //isPaired: bool,
-               isConnectable: bool,
-               isConnected: bool,
+               is_connectable: bool,
+               is_connected: bool,
                //isTrusted: bool,
-               isBlocked: bool,
+               is_blocked: bool,
                //isLegacyPairing: bool,
                uuids: Vec<String>,
                name: String,
                //productId: u32,
                //productVersion: u32,
                rssi: i16,
-               txPower: i16,
+               tx_power: i16,
                //vendorId: u32,
                //vendorIdSource: String
                )
@@ -59,19 +59,19 @@ impl FakeBluetoothDevice {
             appearance: Cell::new(appearance),
             //connectionError: Cell::new(connectionError),
             //deviceClass: Cell::new(deviceClass),
-            gattServices: RefCell::new(gattServices),
+            gatt_services: RefCell::new(gatt_services),
             //isPaired: Cell::new(isPaired),
-            isConnectable: Cell::new(isConnectable),
-            isConnected: Cell::new(isConnected),
+            is_connectable: Cell::new(is_connectable),
+            is_connected: Cell::new(is_connected),
             //isTrusted: Cell::new(isTrusted),
-            isBlocked: Cell::new(isBlocked),
+            is_blocked: Cell::new(is_blocked),
             //isLegacyPairing: Cell::new(isLegacyPairing),
             uuids: RefCell::new(uuids),
             name: RefCell::new(name),
             //productId: Cell::new(productId),
             //productVersion: Cell::new(productVersion),
             rssi: Cell::new(rssi),
-            txPower: Cell::new(txPower),
+            tx_power: Cell::new(tx_power),
             //vendorId: Cell::new(vendorId),
             //vendorIdSource: RefCell::new(vendorIdSource),
         }
@@ -85,19 +85,19 @@ impl FakeBluetoothDevice {
             appearance: Cell::new(0),
             //connectionError: Cell::new(0),
             //deviceClass: Cell::new(0),
-            gattServices: RefCell::new(vec![]),
+            gatt_services: RefCell::new(vec![]),
             //isPaired: Cell::new(false),
-            isConnectable: Cell::new(false),
-            isConnected: Cell::new(false),
+            is_connectable: Cell::new(false),
+            is_connected: Cell::new(false),
             //isTrusted: Cell::new(false),
-            isBlocked: Cell::new(false),
+            is_blocked: Cell::new(false),
             //isLegacyPairing: Cell::new(false),
             uuids: RefCell::new(vec![]),
             name: RefCell::new(String::new()),
             //productId: Cell::new(0),
             //productVersion: Cell::new(0),
             rssi: Cell::new(0),
-            txPower: Cell::new(0),
+            tx_power: Cell::new(0),
             //vendorId: Cell::new(0),
             //vendorIdSource: RefCell::new(String::new()),
         }
@@ -137,27 +137,27 @@ impl FakeBluetoothDevice {
     }
 
     pub fn get_gatt_services(&self) -> Result<Vec<FakeBluetoothGATTService>, Box<Error>> {
-        Ok(self.gattServices.borrow().clone())
+        Ok(self.gatt_services.borrow().clone())
     }
 
     pub fn set_gatt_service(&mut self, services: Vec<FakeBluetoothGATTService>) {
-        *self.gattServices.borrow_mut() = services;
+        *self.gatt_services.borrow_mut() = services;
     }
 
     pub fn is_connected(&self) -> Result<bool, Box<Error>> {
-        Ok(self.isConnected.get())
+        Ok(self.is_connected.get())
     }
 
     pub fn set_connected(&mut self, value: bool) {
-        self.isConnected.set(value);
+        self.is_connected.set(value);
     }
 
     pub fn is_blocked(&self) -> Result<bool, Box<Error>> {
-        Ok(self.isBlocked.get())
+        Ok(self.is_blocked.get())
     }
 
     pub fn set_blocked(&mut self, value: bool) {
-        self.isBlocked.set(value);
+        self.is_blocked.set(value);
     }
 
     pub fn get_uuids(&self) -> Result<Vec<String>, Box<Error>> {
@@ -185,16 +185,16 @@ impl FakeBluetoothDevice {
     }
 
     pub fn get_tx_power(&self) -> Result<i16, Box<Error>> {
-        Ok(self.txPower.get())
+        Ok(self.tx_power.get())
     }
 
     pub fn set_tx_power(&mut self, value: i16) {
-        self.txPower.set(value);
+        self.tx_power.set(value);
     }
 
     pub fn connect(&self) -> Result<(), Box<Error>> {
-        if self.isConnectable.get() && !self.isConnected.get() {
-            self.isConnected.set(true);
+        if self.is_connectable.get() && !self.is_connected.get() {
+            self.is_connected.set(true);
             return Ok(());
         } else {
             return Err(Box::from("Could not connect to the device."));
@@ -202,8 +202,8 @@ impl FakeBluetoothDevice {
     }
 
     pub fn disconnect(&self) -> Result<(), Box<Error>>{
-        if self.isConnected.get() {
-            self.isConnected.set(false);
+        if self.is_connected.get() {
+            self.is_connected.set(false);
             return Ok(());
         } else {
             return Err(Box::from("The device is not connected."));
