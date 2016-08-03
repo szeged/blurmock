@@ -18,6 +18,10 @@ impl FakeBluetoothDiscoverySession {
         }
     }
 
+    pub fn get_adapter(&self) -> Arc<FakeBluetoothAdapter> {
+        self.adapter.clone()
+    }
+
     pub fn start_discovery(&self) -> Result<(), Box<Error>> {
         Ok(())
     }

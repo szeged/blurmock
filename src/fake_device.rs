@@ -2,6 +2,7 @@ use fake_adapter::FakeBluetoothAdapter;
 use fake_service::FakeBluetoothGATTService;
 use std::error::Error;
 use std::sync::Arc;
+use rustc_serialize::hex::FromHex;
 
 #[derive(Clone, Debug)]
 pub struct FakeBluetoothDevice {
@@ -9,23 +10,22 @@ pub struct FakeBluetoothDevice {
     adapter: Arc<FakeBluetoothAdapter>,
     address: String,
     appearance: u16,
-    //connectionError: u32,
-    //deviceClass: u32,
+    class: u32,
     gatt_services: Vec<Arc<FakeBluetoothGATTService>>,
-    //isPaired: bool,
+    is_paired: bool,
     is_connectable: bool,
     is_connected: bool,
-    //isTrusted: bool,
+    is_trusted: bool,
     is_blocked: bool,
-    //isLegacyPairing: bool,
+    is_legacy_pairing: bool,
     uuids: Vec<String>,
     name: String,
-    //productId: u32,
-    //productVersion: u32,
+    icon: String,
+    alias: String,
+    product_version: u32,
     rssi: i16,
     tx_power: i16,
-    //vendorId: u32,
-    //vendorIdSource: String,
+    modalias: String,
 }
 
 impl FakeBluetoothDevice {
@@ -33,47 +33,44 @@ impl FakeBluetoothDevice {
                adapter: Arc<FakeBluetoothAdapter>,
                address: String,
                appearance: u16,
-               //connectionError: u32,
-               //deviceClass: u32,
+               class: u32,
                gatt_services: Vec<Arc<FakeBluetoothGATTService>>,
-               //isPaired: bool,
+               is_paired: bool,
                is_connectable: bool,
                is_connected: bool,
-               //isTrusted: bool,
+               is_trusted: bool,
                is_blocked: bool,
-               //isLegacyPairing: bool,
+               is_legacy_pairing: bool,
                uuids: Vec<String>,
                name: String,
-               //productId: u32,
-               //productVersion: u32,
+               icon: String,
+               alias: String,
+               product_version: u32,
                rssi: i16,
                tx_power: i16,
-               //vendorId: u32,
-               //vendorIdSource: String
-               )
+               modalias: String)
                -> FakeBluetoothDevice {
         FakeBluetoothDevice{
             object_path: object_path,
             adapter: adapter,
             address: address,
             appearance: appearance,
-            //connectionError: connectionError,
-            //deviceClass: deviceClass,
+            class: class,
             gatt_services: gatt_services,
-            //isPaired: isPaired,
+            is_paired: is_paired,
             is_connectable: is_connectable,
             is_connected: is_connected,
-            //isTrusted: isTrusted,
+            is_trusted: is_trusted,
             is_blocked: is_blocked,
-            //isLegacyPairing: isLegacyPairing,
+            is_legacy_pairing: is_legacy_pairing,
             uuids: uuids,
             name: name,
-            //productId: productId,
-            //productVersion: productVersion,
+            icon: icon,
+            alias: alias,
+            product_version: product_version,
             rssi: rssi,
             tx_power: tx_power,
-            //vendorId: vendorId,
-            //vendorIdSource: vendorIdSource,
+            modalias: modalias,
         }
     }
 
@@ -83,23 +80,22 @@ impl FakeBluetoothDevice {
             adapter: Arc::new(FakeBluetoothAdapter::new_empty()),
             address: String::new(),
             appearance: 0,
-            //connectionError: 0,
-            //deviceClass: 0,
+            class: 0,
             gatt_services: vec![],
-            //isPaired: false,
+            is_paired: false,
             is_connectable: false,
             is_connected: false,
-            //isTrusted: false,
+            is_trusted: false,
             is_blocked: false,
-            //isLegacyPairing: false,
+            is_legacy_pairing: false,
             uuids: vec![],
             name: String::new(),
-            //productId: 0,
-            //productVersion: 0,
+            icon: String::new(),
+            alias: String::new(),
+            product_version: 0,
             rssi: 0,
             tx_power: 0,
-            //vendorId: 0,
-            //vendorIdSource: String::new(),
+            modalias: String::new(),
         }
     }
 
@@ -119,13 +115,36 @@ impl FakeBluetoothDevice {
         self.adapter = adapter;
     }
 
-
     pub fn get_address(&self) -> Result<String, Box<Error>> {
         Ok(self.address.clone())
     }
 
     pub fn set_address(&mut self, address: String) {
         self.address = address;
+    }
+
+    pub fn get_name(&self) -> Result<String, Box<Error>> {
+        Ok(self.name.clone())
+    }
+
+    pub fn set_name(&mut self, name: String) {
+        self.name = name;
+    }
+
+    pub fn get_icon(&self) -> Result<String, Box<Error>> {
+        Ok(self.icon.clone())
+    }
+
+    pub fn set_icon(&mut self, value: String) {
+        self.icon = value;
+    }
+
+    pub fn get_class(&self) -> Result<u32, Box<Error>> {
+        Ok(self.class)
+    }
+
+    pub fn set_class(&mut self, value: u32) {
+        self.class = value;
     }
 
     pub fn get_appearance(&self) -> Result<u16, Box<Error>> {
@@ -136,12 +155,20 @@ impl FakeBluetoothDevice {
         self.appearance = appearance;
     }
 
-    pub fn get_gatt_services(&self) -> Result<Vec<Arc<FakeBluetoothGATTService>>, Box<Error>> {
-        Ok(self.gatt_services.clone())
+    pub fn get_uuids(&self) -> Result<Vec<String>, Box<Error>> {
+        Ok(self.uuids.clone())
     }
 
-    pub fn set_gatt_service(&mut self, services: Vec<Arc<FakeBluetoothGATTService>>) {
-        self.gatt_services = services;
+    pub fn set_uuids(&mut self, uuids: Vec<String>) {
+        self.uuids = uuids;
+    }
+
+    pub fn is_paired(&self) -> Result<bool, Box<Error>> {
+        Ok(self.is_paired)
+    }
+
+    pub fn set_paired(&mut self, value: bool) {
+        self.is_paired = value;
     }
 
     pub fn is_connected(&self) -> Result<bool, Box<Error>> {
@@ -152,6 +179,14 @@ impl FakeBluetoothDevice {
         self.is_connected = connected;
     }
 
+    pub fn is_trusted(&self) -> Result<bool, Box<Error>> {
+        Ok(self.is_trusted)
+    }
+
+    pub fn set_trusted(&mut self, value: bool) {
+        self.is_trusted = value;
+    }
+
     pub fn is_blocked(&self) -> Result<bool, Box<Error>> {
         Ok(self.is_blocked)
     }
@@ -160,20 +195,58 @@ impl FakeBluetoothDevice {
         self.is_blocked = blocked;
     }
 
-    pub fn get_uuids(&self) -> Result<Vec<String>, Box<Error>> {
-        Ok(self.uuids.clone())
+    pub fn get_alias(&self) -> Result<String, Box<Error>> {
+        Ok(self.alias.clone())
     }
 
-    pub fn set_uuids(&mut self, uuids: Vec<String>) {
-        self.uuids = uuids;
+    pub fn set_alias(&mut self, value: String) {
+        self.alias = value
     }
 
-    pub fn get_name(&self) -> Result<String, Box<Error>> {
-        Ok(self.name.clone())
+    pub fn is_legacy_pairing(&self) -> Result<bool, Box<Error>> {
+        Ok(self.is_legacy_pairing)
     }
 
-    pub fn set_name(&mut self, name: String) {
-        self.name = name;
+    pub fn set_legacy_pairing(&mut self, value: bool) {
+        self.is_legacy_pairing = value;
+    }
+
+    pub fn get_modalias(&self) ->  Result<(String, u32, u32, u32), Box<Error>> {
+        let ids: Vec<&str> = self.modalias.split(":").collect();
+
+        let source = String::from(ids[0]);
+        let vendor = ids[1][1..5].from_hex().unwrap();
+        let product = ids[1][6..10].from_hex().unwrap();
+        let device = ids[1][11..15].from_hex().unwrap();
+
+        Ok((source,
+        (vendor[0] as u32) * 16 * 16 + (vendor[1] as u32),
+        (product[0] as u32) * 16 * 16 + (product[1] as u32),
+        (device[0] as u32) * 16 * 16 + (device[1] as u32)))
+    }
+
+    pub fn set_modalias(&mut self, value: String) {
+        self.modalias = value;
+    }
+
+    pub fn get_vendor_id_source(&self) -> Result<String, Box<Error>> {
+        let (vendor_id_source,_,_,_) = try!(self.get_modalias());
+        Ok(vendor_id_source)
+    }
+
+    pub fn get_vendor_id(&self) -> Result<u32, Box<Error>> {
+        let (_,vendor_id,_,_) = try!(self.get_modalias());
+        Ok(vendor_id)
+    }
+
+    pub fn get_product_id(&self) -> Result<u32, Box<Error>> {
+        let (_,_,product_id,_) = try!(self.get_modalias());
+        Ok(product_id)
+    }
+
+    pub fn get_device_id(&self) -> Result<u32, Box<Error>> {
+        let (_,_,_,device_id) = try!(self.get_modalias());
+        Ok(device_id)
     }
 
     pub fn get_rssi(&self) -> Result<i16, Box<Error>> {
@@ -190,6 +263,14 @@ impl FakeBluetoothDevice {
 
     pub fn set_tx_power(&mut self, tx_power: i16) {
         self.tx_power = tx_power;
+    }
+
+    pub fn get_gatt_services(&self) -> Result<Vec<Arc<FakeBluetoothGATTService>>, Box<Error>> {
+        Ok(self.gatt_services.clone())
+    }
+
+    pub fn set_gatt_service(&mut self, services: Vec<Arc<FakeBluetoothGATTService>>) {
+        self.gatt_services = services;
     }
 
     pub fn connect(&mut self) -> Result<(), Box<Error>> {
