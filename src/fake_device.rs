@@ -1,16 +1,17 @@
 use fake_adapter::FakeBluetoothAdapter;
 use fake_service::FakeBluetoothGATTService;
 use std::error::Error;
+use std::sync::Arc;
 
 #[derive(Clone, Debug)]
 pub struct FakeBluetoothDevice {
     object_path: String,
-    adapter: FakeBluetoothAdapter,
+    adapter: Arc<FakeBluetoothAdapter>,
     address: String,
     appearance: u16,
     //connectionError: u32,
     //deviceClass: u32,
-    gatt_services: Vec<FakeBluetoothGATTService>,
+    gatt_services: Vec<Arc<FakeBluetoothGATTService>>,
     //isPaired: bool,
     is_connectable: bool,
     is_connected: bool,
@@ -29,12 +30,12 @@ pub struct FakeBluetoothDevice {
 
 impl FakeBluetoothDevice {
     pub fn new(object_path: String,
-               adapter: FakeBluetoothAdapter,
+               adapter: Arc<FakeBluetoothAdapter>,
                address: String,
                appearance: u16,
                //connectionError: u32,
                //deviceClass: u32,
-               gatt_services: Vec<FakeBluetoothGATTService>,
+               gatt_services: Vec<Arc<FakeBluetoothGATTService>>,
                //isPaired: bool,
                is_connectable: bool,
                is_connected: bool,
@@ -79,7 +80,7 @@ impl FakeBluetoothDevice {
     pub fn new_empty() -> FakeBluetoothDevice {
         FakeBluetoothDevice{
             object_path: String::new(),
-            adapter: FakeBluetoothAdapter::new_empty(),
+            adapter: Arc::new(FakeBluetoothAdapter::new_empty()),
             address: String::new(),
             appearance: 0,
             //connectionError: 0,
@@ -110,11 +111,11 @@ impl FakeBluetoothDevice {
         self.object_path = object_path;
     }
 
-    pub fn get_adapter(&self) -> Result<FakeBluetoothAdapter, Box<Error>> {
+    pub fn get_adapter(&self) -> Result<Arc<FakeBluetoothAdapter>, Box<Error>> {
         Ok(self.adapter.clone())
     }
 
-    pub fn set_adapter(&mut self, adapter: FakeBluetoothAdapter) {
+    pub fn set_adapter(&mut self, adapter: Arc<FakeBluetoothAdapter>) {
         self.adapter = adapter;
     }
 
@@ -135,11 +136,11 @@ impl FakeBluetoothDevice {
         self.appearance = appearance;
     }
 
-    pub fn get_gatt_services(&self) -> Result<Vec<FakeBluetoothGATTService>, Box<Error>> {
+    pub fn get_gatt_services(&self) -> Result<Vec<Arc<FakeBluetoothGATTService>>, Box<Error>> {
         Ok(self.gatt_services.clone())
     }
 
-    pub fn set_gatt_service(&mut self, services: Vec<FakeBluetoothGATTService>) {
+    pub fn set_gatt_service(&mut self, services: Vec<Arc<FakeBluetoothGATTService>>) {
         self.gatt_services = services;
     }
 

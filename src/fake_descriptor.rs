@@ -1,11 +1,12 @@
 use fake_characteristic::FakeBluetoothGATTCharacteristic;
 use std::error::Error;
+use std::sync::Arc;
 
 #[derive(Clone, Debug)]
 pub struct FakeBluetoothGATTDescriptor {
     object_path: String,
     uuid: String,
-    characteristic: FakeBluetoothGATTCharacteristic,
+    characteristic: Arc<FakeBluetoothGATTCharacteristic>,
     value: Vec<u8>,
     flags: Vec<String>,
 }
@@ -13,7 +14,7 @@ pub struct FakeBluetoothGATTDescriptor {
 impl FakeBluetoothGATTDescriptor {
     pub fn new(object_path: String,
                uuid: String,
-               characteristic: FakeBluetoothGATTCharacteristic,
+               characteristic: Arc<FakeBluetoothGATTCharacteristic>,
                value: Vec<u8>,
                flags: Vec<String>)
                -> FakeBluetoothGATTDescriptor {
@@ -30,7 +31,7 @@ impl FakeBluetoothGATTDescriptor {
         FakeBluetoothGATTDescriptor {
             object_path: String::new(),
             uuid: String::new(),
-            characteristic: FakeBluetoothGATTCharacteristic::new_empty(),
+            characteristic: Arc::new(FakeBluetoothGATTCharacteristic::new_empty()),
             value: vec![],
             flags: vec![],
         }
@@ -52,11 +53,11 @@ impl FakeBluetoothGATTDescriptor {
         self.uuid = uuid;
     }
 
-    pub fn get_characteristic(&self) -> Result<FakeBluetoothGATTCharacteristic, Box<Error>> {
+    pub fn get_characteristic(&self) -> Result<Arc<FakeBluetoothGATTCharacteristic>, Box<Error>> {
         Ok(self.characteristic.clone())
     }
 
-    pub fn set_characteristic(&mut self, characteristic: FakeBluetoothGATTCharacteristic) {
+    pub fn set_characteristic(&mut self, characteristic: Arc<FakeBluetoothGATTCharacteristic>) {
         self.characteristic = characteristic;
     }
 

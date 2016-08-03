@@ -10,7 +10,7 @@ pub struct FakeBluetoothAdapter {
     is_powered: bool,
     can_start_discovery: bool,
     can_stop_discovery: bool,
-    devices: Vec<FakeBluetoothDevice>,
+    devices: Vec<Arc<FakeBluetoothDevice>>,
     addatas: Vec<String>,
     address: String,
     name: String,
@@ -22,7 +22,7 @@ impl FakeBluetoothAdapter {
                is_powered: bool,
                can_start_discovery: bool,
                can_stop_discovery: bool,
-               devices: Vec<FakeBluetoothDevice>,
+               devices: Vec<Arc<FakeBluetoothDevice>>,
                addatas: Vec<String>,
                address: String,
                name: String) 
@@ -94,15 +94,15 @@ impl FakeBluetoothAdapter {
         self.can_stop_discovery = value;
     }
 
-    pub fn get_devices(&self) -> Result<Vec<FakeBluetoothDevice>, Box<Error>> {
+    pub fn get_devices(&self) -> Result<Vec<Arc<FakeBluetoothDevice>>, Box<Error>> {
         Ok(self.devices.clone())
     }
 
-    pub fn set_devices(&mut self, devices: Vec<FakeBluetoothDevice>){
+    pub fn set_devices(&mut self, devices: Vec<Arc<FakeBluetoothDevice>>){
         self.devices = devices;
     }
 
-    pub fn get_first_device(&self) -> Result<FakeBluetoothDevice, Box<Error>> {
+    pub fn get_first_device(&self) -> Result<Arc<FakeBluetoothDevice>, Box<Error>> {
         if self.devices.is_empty() {
             return Err(Box::from("No device found."))
         }

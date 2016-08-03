@@ -1,23 +1,24 @@
 use fake_characteristic::FakeBluetoothGATTCharacteristic;
 use fake_device::FakeBluetoothDevice;
 use std::error::Error;
+use std::sync::Arc;
 
 #[derive(Clone, Debug)]
 pub struct FakeBluetoothGATTService {
     object_path: String,
-    device: FakeBluetoothDevice,
-    gatt_characteristics: Vec<FakeBluetoothGATTCharacteristic>,
+    device: Arc<FakeBluetoothDevice>,
+    gatt_characteristics: Vec<Arc<FakeBluetoothGATTCharacteristic>>,
     is_primary: bool,
-    included_services: Vec<FakeBluetoothGATTService>,
+    included_services: Vec<Arc<FakeBluetoothGATTService>>,
     uuid: String,
 }
 
 impl FakeBluetoothGATTService {
     pub fn new(object_path: String,
-               device: FakeBluetoothDevice,
-               gatt_characteristics: Vec<FakeBluetoothGATTCharacteristic>,
+               device: Arc<FakeBluetoothDevice>,
+               gatt_characteristics: Vec<Arc<FakeBluetoothGATTCharacteristic>>,
                is_primary: bool,
-               included_services: Vec<FakeBluetoothGATTService>,
+               included_services: Vec<Arc<FakeBluetoothGATTService>>,
                uuid: String)
                -> FakeBluetoothGATTService {
         FakeBluetoothGATTService {
@@ -33,7 +34,7 @@ impl FakeBluetoothGATTService {
     pub fn new_empty() -> FakeBluetoothGATTService {
         FakeBluetoothGATTService {
             object_path: String::new(),
-            device: FakeBluetoothDevice::new_empty(),
+            device: Arc::new(FakeBluetoothDevice::new_empty()),
             gatt_characteristics: vec![],
             is_primary: false,
             included_services: vec![],
@@ -49,19 +50,19 @@ impl FakeBluetoothGATTService {
         self.object_path = path;
     }
 
-    pub fn get_device(&self) -> Result<FakeBluetoothDevice, Box<Error>> {
+    pub fn get_device(&self) -> Result<Arc<FakeBluetoothDevice>, Box<Error>> {
         Ok(self.device.clone())
     }
 
-    pub fn set_device(&mut self, device: FakeBluetoothDevice) {
+    pub fn set_device(&mut self, device: Arc<FakeBluetoothDevice>) {
         self.device = device;
     }
 
-    pub fn get_gatt_characteristics(&self) -> Result<Vec<FakeBluetoothGATTCharacteristic>, Box<Error>> {
+    pub fn get_gatt_characteristics(&self) -> Result<Vec<Arc<FakeBluetoothGATTCharacteristic>>, Box<Error>> {
         Ok(self.gatt_characteristics.clone())
     }
 
-    pub fn set_gatt_characteristics(&mut self, characteristics: Vec<FakeBluetoothGATTCharacteristic>) {
+    pub fn set_gatt_characteristics(&mut self, characteristics: Vec<Arc<FakeBluetoothGATTCharacteristic>>) {
         self.gatt_characteristics = characteristics;
     }
 
@@ -73,11 +74,11 @@ impl FakeBluetoothGATTService {
         self.is_primary = value;
     }
 
-    pub fn get_included_services(&self) -> Result<Vec<FakeBluetoothGATTService>, Box<Error>> {
+    pub fn get_included_services(&self) -> Result<Vec<Arc<FakeBluetoothGATTService>>, Box<Error>> {
         Ok(self.included_services.clone())
     }
 
-    pub fn set_included_services(&mut self, included_services: Vec<FakeBluetoothGATTService>) {
+    pub fn set_included_services(&mut self, included_services: Vec<Arc<FakeBluetoothGATTService>>) {
         self.included_services = included_services;
     }
 

@@ -1,26 +1,27 @@
 use fake_descriptor::FakeBluetoothGATTDescriptor;
 use fake_service::FakeBluetoothGATTService;
 use std::error::Error;
+use std::sync::Arc;
 
 #[derive(Clone, Debug)]
 pub struct FakeBluetoothGATTCharacteristic {
     object_path: String,
     uuid: String,
-    service: FakeBluetoothGATTService,
+    service: Arc<FakeBluetoothGATTService>,
     value: Vec<u8>,
     is_notifying: bool,
     flags: Vec<String>,
-    descriptors: Vec<FakeBluetoothGATTDescriptor>,
+    descriptors: Vec<Arc<FakeBluetoothGATTDescriptor>>,
 }
 
 impl FakeBluetoothGATTCharacteristic {
     pub fn new(object_path: String,
                uuid: String,
-               service: FakeBluetoothGATTService,
+               service: Arc<FakeBluetoothGATTService>,
                value: Vec<u8>,
                is_notifying: bool,
                flags: Vec<String>,
-               descriptors: Vec<FakeBluetoothGATTDescriptor>)
+               descriptors: Vec<Arc<FakeBluetoothGATTDescriptor>>)
                -> FakeBluetoothGATTCharacteristic {
         FakeBluetoothGATTCharacteristic {
             object_path: object_path,
@@ -37,7 +38,7 @@ impl FakeBluetoothGATTCharacteristic {
         FakeBluetoothGATTCharacteristic {
             object_path: String::new(),
             uuid: String::new(),
-            service: FakeBluetoothGATTService::new_empty(),
+            service: Arc::new(FakeBluetoothGATTService::new_empty()),
             value: vec![],
             is_notifying: false,
             flags: vec![],
@@ -61,11 +62,11 @@ impl FakeBluetoothGATTCharacteristic {
         self.uuid = uuid;
     }
 
-    pub fn get_service(&self) -> Result<FakeBluetoothGATTService, Box<Error>> {
+    pub fn get_service(&self) -> Result<Arc<FakeBluetoothGATTService>, Box<Error>> {
         Ok(self.service.clone())
     }
 
-    pub fn set_service(&mut self, service: FakeBluetoothGATTService) {
+    pub fn set_service(&mut self, service: Arc<FakeBluetoothGATTService>) {
         self.service = service;
     }
 
@@ -93,11 +94,11 @@ impl FakeBluetoothGATTCharacteristic {
         self.flags = flags;
     }
 
-    pub fn get_descriptors(&self) -> Result<Vec<FakeBluetoothGATTDescriptor>, Box<Error>> {
+    pub fn get_descriptors(&self) -> Result<Vec<Arc<FakeBluetoothGATTDescriptor>>, Box<Error>> {
         Ok(self.descriptors.clone())
     }
 
-    pub fn set_descriptors(&mut self, descriptors: Vec<FakeBluetoothGATTDescriptor>) {
+    pub fn set_descriptors(&mut self, descriptors: Vec<Arc<FakeBluetoothGATTDescriptor>>) {
         self.descriptors = descriptors;
     }
 
