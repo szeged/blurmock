@@ -1,14 +1,13 @@
 use fake_characteristic::FakeBluetoothGATTCharacteristic;
-use std::cell::RefCell;
 use std::error::Error;
 
 #[derive(Clone, Debug)]
 pub struct FakeBluetoothGATTDescriptor {
-    object_path: RefCell<String>,
-    uuid: RefCell<String>,
-    characteristic: RefCell<FakeBluetoothGATTCharacteristic>,
-    value: RefCell<Vec<u8>>,
-    flags: RefCell<Vec<String>>,
+    object_path: String,
+    uuid: String,
+    characteristic: FakeBluetoothGATTCharacteristic,
+    value: Vec<u8>,
+    flags: Vec<String>,
 }
 
 impl FakeBluetoothGATTDescriptor {
@@ -19,70 +18,70 @@ impl FakeBluetoothGATTDescriptor {
                flags: Vec<String>)
                -> FakeBluetoothGATTDescriptor {
         FakeBluetoothGATTDescriptor {
-            object_path: RefCell::new(object_path),
-            uuid: RefCell::new(uuid),
-            characteristic: RefCell::new(characteristic),
-            value: RefCell::new(value),
-            flags: RefCell::new(flags),
+            object_path: object_path,
+            uuid: uuid,
+            characteristic: characteristic,
+            value: value,
+            flags: flags,
         }
     }
 
     pub fn new_empty() -> FakeBluetoothGATTDescriptor {
         FakeBluetoothGATTDescriptor {
-            object_path: RefCell::new(String::new()),
-            uuid: RefCell::new(String::new()),
-            characteristic: RefCell::new(FakeBluetoothGATTCharacteristic::new_empty()),
-            value: RefCell::new(vec![]),
-            flags: RefCell::new(vec![]),
+            object_path: String::new(),
+            uuid: String::new(),
+            characteristic: FakeBluetoothGATTCharacteristic::new_empty(),
+            value: vec![],
+            flags: vec![],
         }
     }
 
     pub fn get_id(&self) -> String {
-        self.object_path.borrow().clone()
+        self.object_path.clone()
     }
 
     pub fn set_id(&mut self, path: String) {
-        *self.object_path.borrow_mut() = path;
+        self.object_path = path;
     }
 
     pub fn get_uuid(&self) -> Result<String, Box<Error>> {
-        Ok(self.uuid.borrow().clone())
+        Ok(self.uuid.clone())
     }
 
     pub fn set_uuid(&mut self, uuid: String) {
-        *self.uuid.borrow_mut() = uuid;
+        self.uuid = uuid;
     }
 
     pub fn get_characteristic(&self) -> Result<FakeBluetoothGATTCharacteristic, Box<Error>> {
-        Ok(self.characteristic.borrow().clone())
+        Ok(self.characteristic.clone())
     }
 
     pub fn set_characteristic(&mut self, characteristic: FakeBluetoothGATTCharacteristic) {
-        *self.characteristic.borrow_mut() = characteristic;
+        self.characteristic = characteristic;
     }
 
     pub fn get_value(&self) -> Result<Vec<u8>, Box<Error>> {
-        Ok(self.value.borrow().clone())
+        Ok(self.value.clone())
     }
 
     pub fn set_value(&mut self, value: Vec<u8>) {
-        *self.value.borrow_mut() = value;
+        self.value = value;
     }
 
     pub fn get_flags(&self) -> Result<Vec<String>, Box<Error>> {
-        Ok(self.flags.borrow().clone())
+        Ok(self.flags.clone())
     }
 
     pub fn set_flags(&mut self, flags: Vec<String>) {
-        *self.flags.borrow_mut() = flags;
+        self.flags = flags;
     }
 
     pub fn read_value(&self) -> Result<Vec<u8>, Box<Error>> {
         self.get_value()
     }
 
-    pub fn write_value(&self, value: Vec<u8>) -> Result<(), Box<Error>> {
-        *self.value.borrow_mut() = value;
+    pub fn write_value(&mut self, value: Vec<u8>) -> Result<(), Box<Error>> {
+        self.value = value;
         Ok(())
     }
 }
