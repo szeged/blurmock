@@ -1,31 +1,30 @@
 use fake_adapter::FakeBluetoothAdapter;
 use fake_service::FakeBluetoothGATTService;
-use std::cell::{Cell, RefCell};
 use std::error::Error;
 
 #[derive(Clone, Debug)]
 pub struct FakeBluetoothDevice {
-    object_path: RefCell<String>,
-    adapter: RefCell<FakeBluetoothAdapter>,
-    address: RefCell<String>,
-    appearance: Cell<u16>,
-    //connectionError: Cell<u32>,
-    //deviceClass: Cell<u32>,
-    gatt_services: RefCell<Vec<FakeBluetoothGATTService>>,
-    //isPaired: Cell<bool>,
-    is_connectable: Cell<bool>,
-    is_connected: Cell<bool>,
-    //isTrusted: Cell<bool>,
-    is_blocked: Cell<bool>,
-    //isLegacyPairing: Cell<bool>,
-    uuids: RefCell<Vec<String>>,
-    name: RefCell<String>,
-    //productId: Cell<u32>,
-    //productVersion: Cell<u32>,
-    rssi: Cell<i16>,
-    tx_power: Cell<i16>,
-    //vendorId: Cell<u32>,
-    //vendorIdSource: RefCell<String>,
+    object_path: String,
+    adapter: FakeBluetoothAdapter,
+    address: String,
+    appearance: u16,
+    //connectionError: u32,
+    //deviceClass: u32,
+    gatt_services: Vec<FakeBluetoothGATTService>,
+    //isPaired: bool,
+    is_connectable: bool,
+    is_connected: bool,
+    //isTrusted: bool,
+    is_blocked: bool,
+    //isLegacyPairing: bool,
+    uuids: Vec<String>,
+    name: String,
+    //productId: u32,
+    //productVersion: u32,
+    rssi: i16,
+    tx_power: i16,
+    //vendorId: u32,
+    //vendorIdSource: String,
 }
 
 impl FakeBluetoothDevice {
@@ -53,157 +52,157 @@ impl FakeBluetoothDevice {
                )
                -> FakeBluetoothDevice {
         FakeBluetoothDevice{
-            object_path: RefCell::new(object_path),
-            adapter: RefCell::new(adapter),
-            address: RefCell::new(address),
-            appearance: Cell::new(appearance),
-            //connectionError: Cell::new(connectionError),
-            //deviceClass: Cell::new(deviceClass),
-            gatt_services: RefCell::new(gatt_services),
-            //isPaired: Cell::new(isPaired),
-            is_connectable: Cell::new(is_connectable),
-            is_connected: Cell::new(is_connected),
-            //isTrusted: Cell::new(isTrusted),
-            is_blocked: Cell::new(is_blocked),
-            //isLegacyPairing: Cell::new(isLegacyPairing),
-            uuids: RefCell::new(uuids),
-            name: RefCell::new(name),
-            //productId: Cell::new(productId),
-            //productVersion: Cell::new(productVersion),
-            rssi: Cell::new(rssi),
-            tx_power: Cell::new(tx_power),
-            //vendorId: Cell::new(vendorId),
-            //vendorIdSource: RefCell::new(vendorIdSource),
+            object_path: object_path,
+            adapter: adapter,
+            address: address,
+            appearance: appearance,
+            //connectionError: connectionError,
+            //deviceClass: deviceClass,
+            gatt_services: gatt_services,
+            //isPaired: isPaired,
+            is_connectable: is_connectable,
+            is_connected: is_connected,
+            //isTrusted: isTrusted,
+            is_blocked: is_blocked,
+            //isLegacyPairing: isLegacyPairing,
+            uuids: uuids,
+            name: name,
+            //productId: productId,
+            //productVersion: productVersion,
+            rssi: rssi,
+            tx_power: tx_power,
+            //vendorId: vendorId,
+            //vendorIdSource: vendorIdSource,
         }
     }
 
     pub fn new_empty() -> FakeBluetoothDevice {
         FakeBluetoothDevice{
-            object_path: RefCell::new(String::new()),
-            adapter: RefCell::new(FakeBluetoothAdapter::new_empty()),
-            address: RefCell::new(String::new()),
-            appearance: Cell::new(0),
-            //connectionError: Cell::new(0),
-            //deviceClass: Cell::new(0),
-            gatt_services: RefCell::new(vec![]),
-            //isPaired: Cell::new(false),
-            is_connectable: Cell::new(false),
-            is_connected: Cell::new(false),
-            //isTrusted: Cell::new(false),
-            is_blocked: Cell::new(false),
-            //isLegacyPairing: Cell::new(false),
-            uuids: RefCell::new(vec![]),
-            name: RefCell::new(String::new()),
-            //productId: Cell::new(0),
-            //productVersion: Cell::new(0),
-            rssi: Cell::new(0),
-            tx_power: Cell::new(0),
-            //vendorId: Cell::new(0),
-            //vendorIdSource: RefCell::new(String::new()),
+            object_path: String::new(),
+            adapter: FakeBluetoothAdapter::new_empty(),
+            address: String::new(),
+            appearance: 0,
+            //connectionError: 0,
+            //deviceClass: 0,
+            gatt_services: vec![],
+            //isPaired: false,
+            is_connectable: false,
+            is_connected: false,
+            //isTrusted: false,
+            is_blocked: false,
+            //isLegacyPairing: false,
+            uuids: vec![],
+            name: String::new(),
+            //productId: 0,
+            //productVersion: 0,
+            rssi: 0,
+            tx_power: 0,
+            //vendorId: 0,
+            //vendorIdSource: String::new(),
         }
     }
 
     pub fn get_id(&self) -> String {
-        self.object_path.borrow().clone()
+        self.object_path.clone()
     }
 
-    pub fn set_id(&mut self, path: String) {
-        *self.object_path.borrow_mut() = path;
+    pub fn set_id(&mut self, object_path: String) {
+        self.object_path = object_path;
     }
 
     pub fn get_adapter(&self) -> Result<FakeBluetoothAdapter, Box<Error>> {
-        Ok(self.adapter.borrow().clone())
+        Ok(self.adapter.clone())
     }
 
     pub fn set_adapter(&mut self, adapter: FakeBluetoothAdapter) {
-        *self.adapter.borrow_mut() = adapter;
+        self.adapter = adapter;
     }
 
 
     pub fn get_address(&self) -> Result<String, Box<Error>> {
-        Ok(self.address.borrow().clone())
+        Ok(self.address.clone())
     }
 
     pub fn set_address(&mut self, address: String) {
-        *self.address.borrow_mut() = address;
+        self.address = address;
     }
 
     pub fn get_appearance(&self) -> Result<u16, Box<Error>> {
-        Ok(self.appearance.get())
+        Ok(self.appearance)
     }
 
-    pub fn set_appearance(&mut self, value: u16) {
-        self.appearance.set(value);
+    pub fn set_appearance(&mut self, appearance: u16) {
+        self.appearance = appearance;
     }
 
     pub fn get_gatt_services(&self) -> Result<Vec<FakeBluetoothGATTService>, Box<Error>> {
-        Ok(self.gatt_services.borrow().clone())
+        Ok(self.gatt_services.clone())
     }
 
     pub fn set_gatt_service(&mut self, services: Vec<FakeBluetoothGATTService>) {
-        *self.gatt_services.borrow_mut() = services;
+        self.gatt_services = services;
     }
 
     pub fn is_connected(&self) -> Result<bool, Box<Error>> {
-        Ok(self.is_connected.get())
+        Ok(self.is_connected)
     }
 
-    pub fn set_connected(&mut self, value: bool) {
-        self.is_connected.set(value);
+    pub fn set_connected(&mut self, connected: bool) {
+        self.is_connected = connected;
     }
 
     pub fn is_blocked(&self) -> Result<bool, Box<Error>> {
-        Ok(self.is_blocked.get())
+        Ok(self.is_blocked)
     }
 
-    pub fn set_blocked(&mut self, value: bool) {
-        self.is_blocked.set(value);
+    pub fn set_blocked(&mut self, blocked: bool) {
+        self.is_blocked = blocked;
     }
 
     pub fn get_uuids(&self) -> Result<Vec<String>, Box<Error>> {
-        Ok(self.uuids.borrow().clone())
+        Ok(self.uuids.clone())
     }
 
     pub fn set_uuids(&mut self, uuids: Vec<String>) {
-        *self.uuids.borrow_mut() = uuids;
+        self.uuids = uuids;
     }
 
     pub fn get_name(&self) -> Result<String, Box<Error>> {
-        Ok(self.name.borrow().clone())
+        Ok(self.name.clone())
     }
 
     pub fn set_name(&mut self, name: String) {
-        *self.name.borrow_mut() = name;
+        self.name = name;
     }
 
     pub fn get_rssi(&self) -> Result<i16, Box<Error>> {
-        Ok(self.rssi.get())
+        Ok(self.rssi)
     }
 
-    pub fn set_rssi(&mut self, value: i16) {
-        self.rssi.set(value);
+    pub fn set_rssi(&mut self, rssi: i16) {
+        self.rssi = rssi;
     }
 
     pub fn get_tx_power(&self) -> Result<i16, Box<Error>> {
-        Ok(self.tx_power.get())
+        Ok(self.tx_power)
     }
 
-    pub fn set_tx_power(&mut self, value: i16) {
-        self.tx_power.set(value);
+    pub fn set_tx_power(&mut self, tx_power: i16) {
+        self.tx_power = tx_power;
     }
 
-    pub fn connect(&self) -> Result<(), Box<Error>> {
-        if self.is_connectable.get() && !self.is_connected.get() {
-            self.is_connected.set(true);
+    pub fn connect(&mut self) -> Result<(), Box<Error>> {
+        if self.is_connectable && !self.is_connected {
+            self.is_connected = true;
             return Ok(());
         } else {
             return Err(Box::from("Could not connect to the device."));
         }
     }
 
-    pub fn disconnect(&self) -> Result<(), Box<Error>>{
-        if self.is_connected.get() {
-            self.is_connected.set(false);
+    pub fn disconnect(&mut self) -> Result<(), Box<Error>>{
+        if self.is_connected {
+            self.is_connected = false;
             return Ok(());
         } else {
             return Err(Box::from("The device is not connected."));
