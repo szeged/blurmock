@@ -82,8 +82,12 @@ impl FakeBluetoothGATTCharacteristic {
         Ok(self.is_notifying)
     }
 
-    pub fn set_is_notifying(&mut self, value: bool) {
-        self.is_notifying = value;
+    pub fn start_notify(&mut self) -> Result<(), Box<Error>> {
+        Ok(self.is_notifying = true)
+    }
+
+    pub fn stop_notify(&mut self) -> Result<(), Box<Error>> {
+        Ok(self.is_notifying = false)
     }
 
     pub fn get_flags(&self) -> Result<Vec<String>, Box<Error>> {

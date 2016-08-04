@@ -167,8 +167,12 @@ impl FakeBluetoothDevice {
         Ok(self.is_paired)
     }
 
-    pub fn set_paired(&mut self, value: bool) {
-        self.is_paired = value;
+    pub fn pair(&mut self) -> Result<(), Box<Error>> {
+        Ok(self.is_paired = true)
+    }
+
+    pub fn cancel_pairing(&mut self) -> Result<(), Box<Error>> {
+        Ok(self.is_paired = false)
     }
 
     pub fn is_connected(&self) -> Result<bool, Box<Error>> {
@@ -272,6 +276,14 @@ impl FakeBluetoothDevice {
 
     pub fn set_gatt_service(&mut self, services: Vec<Arc<FakeBluetoothGATTService>>) {
         self.gatt_services = services;
+    }
+
+    pub fn connect_profile(&self, _uuid: String) -> Result<(), Box<Error>> {
+        unimplemented!();
+    }
+
+    pub fn disconnect_profile(&self, _uuid: String) -> Result<(), Box<Error>> {
+        unimplemented!();
     }
 
     pub fn connect(&mut self) -> Result<(), Box<Error>> {
