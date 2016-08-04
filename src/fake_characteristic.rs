@@ -94,11 +94,11 @@ impl FakeBluetoothGATTCharacteristic {
         self.flags = flags;
     }
 
-    pub fn get_descriptors(&self) -> Result<Vec<Arc<FakeBluetoothGATTDescriptor>>, Box<Error>> {
+    pub fn get_gatt_descriptors(&self) -> Result<Vec<Arc<FakeBluetoothGATTDescriptor>>, Box<Error>> {
         Ok(self.descriptors.clone())
     }
 
-    pub fn set_descriptors(&mut self, descriptors: Vec<Arc<FakeBluetoothGATTDescriptor>>) {
+    pub fn set_gatt_descriptors(&mut self, descriptors: Vec<Arc<FakeBluetoothGATTDescriptor>>) {
         self.descriptors = descriptors;
     }
 
