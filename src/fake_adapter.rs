@@ -103,8 +103,8 @@ impl FakeBluetoothAdapter {
         Ok(self.is_present)
     }
 
-    pub fn set_present(&mut self, value: bool) {
-        self.is_present = value;
+    pub fn set_present(&mut self, value: bool) -> Result<(), Box<Error>> {
+        Ok(self.is_present = value)
     }
 
     pub fn is_powered(&self) -> Result<bool, Box<Error>> {
@@ -112,32 +112,31 @@ impl FakeBluetoothAdapter {
     }
 
     pub fn set_powered(&mut self, value: bool) -> Result<(), Box<Error>> {
-        self.is_powered = value;
-        Ok(())
+        Ok(self.is_powered = value)
     }
 
     pub fn get_can_start_discovery(&self) -> Result<bool, Box<Error>> {
         Ok(self.can_start_discovery)
     }
 
-    pub fn set_can_start_discovery(&mut self, value: bool) {
-        self.can_start_discovery = value;
+    pub fn set_can_start_discovery(&mut self, value: bool) -> Result<(), Box<Error>> {
+        Ok(self.can_start_discovery = value)
     }
 
     pub fn get_can_stop_siscovery(&self) -> Result<bool, Box<Error>> {
         Ok(self.can_stop_discovery)
     }
 
-    pub fn set_can_stop_discovery(&mut self, value: bool) {
-        self.can_stop_discovery = value;
+    pub fn set_can_stop_discovery(&mut self, value: bool) -> Result<(), Box<Error>> {
+        Ok(self.can_stop_discovery = value)
     }
 
     pub fn get_device_list(&self) -> Result<Vec<Arc<FakeBluetoothDevice>>, Box<Error>> {
         Ok(self.devices.clone())
     }
 
-    pub fn set_devices(&mut self, devices: Vec<Arc<FakeBluetoothDevice>>){
-        self.devices = devices;
+    pub fn set_devices(&mut self, devices: Vec<Arc<FakeBluetoothDevice>>) -> Result<(), Box<Error>> {
+        Ok(self.devices = devices)
     }
 
     pub fn get_first_device(&self) -> Result<Arc<FakeBluetoothDevice>, Box<Error>> {
@@ -151,8 +150,8 @@ impl FakeBluetoothAdapter {
         Ok(self.addatas.clone())
     }
 
-    pub fn set_addatas(&mut self, addatas: Vec<String>) {
-        self.addatas = addatas;
+    pub fn set_addatas(&mut self, addatas: Vec<String>) -> Result<(), Box<Error>> {
+        Ok(self.addatas = addatas)
     }
 
     pub fn get_first_addata(&self) -> Result<String, Box<Error>> {
@@ -166,16 +165,16 @@ impl FakeBluetoothAdapter {
         Ok(self.address.clone())
     }
 
-    pub fn set_address(&mut self, address: String) {
-        self.address = address;
+    pub fn set_address(&mut self, address: String) -> Result<(), Box<Error>> {
+        Ok(self.address = address)
     }
 
     pub fn get_name(&self) -> Result<String, Box<Error>> {
         Ok(self.name.clone())
     }
 
-    pub fn set_name(&mut self, name: String) {
-        self.name = name;
+    pub fn set_name(&mut self, name: String) -> Result<(), Box<Error>> {
+        Ok(self.name = name)
     }
 
     pub fn create_discovery_session(&self) -> Result<FakeBluetoothDiscoverySession, Box<Error>> {
@@ -195,8 +194,8 @@ impl FakeBluetoothAdapter {
         Ok(self.class)
     }
 
-    pub fn set_class(&mut self, value: u32) {
-        self.class = value;
+    pub fn set_class(&mut self, value: u32) -> Result<(), Box<Error>> {
+        Ok(self.class = value)
     }
 
     pub fn is_discoverable(&self) -> Result<bool, Box<Error>> {
@@ -204,8 +203,7 @@ impl FakeBluetoothAdapter {
     }
 
     pub fn set_discoverable(&mut self, value: bool) -> Result<(), Box<Error>> {
-        self.is_discoverable = value;
-        Ok(())
+        Ok(self.is_discoverable = value)
     }
 
     pub fn is_pairable(&self) -> Result<bool, Box<Error>> {
@@ -213,8 +211,7 @@ impl FakeBluetoothAdapter {
     }
 
     pub fn set_pairable(&mut self, value: bool) -> Result<(), Box<Error>> {
-        self.is_pairable = value;
-        Ok(())
+        Ok(self.is_pairable = value)
     }
 
     pub fn get_pairable_timeout(&self) -> Result<u32, Box<Error>> {
@@ -222,8 +219,7 @@ impl FakeBluetoothAdapter {
     }
 
     pub fn set_pairable_timeout(&mut self, value: u32) -> Result<(), Box<Error>> {
-        self.pairable_timeout = value;
-        Ok(())
+        Ok(self.pairable_timeout = value)
     }
 
     pub fn get_discoverable_timeout(&self) -> Result<u32, Box<Error>> {
@@ -231,24 +227,23 @@ impl FakeBluetoothAdapter {
     }
 
     pub fn set_discoverable_timeout(&mut self, value: u32) -> Result<(), Box<Error>> {
-        self.discoverable_timeout = value;
-        Ok(())
+        Ok(self.discoverable_timeout = value)
     }
 
     pub fn is_discovering(&self) -> Result<bool, Box<Error>> {
         Ok(self.is_discovering)
     }
 
-    pub fn set_discovering(&mut self, value: bool) {
-        self.is_discovering = value;
+    pub fn set_discovering(&mut self, value: bool) -> Result<(), Box<Error>> {
+        Ok(self.is_discovering = value)
     }
 
     pub fn get_uuids(&self) -> Result<Vec<String>, Box<Error>> {
         Ok(self.uuids.clone())
     }
 
-    pub fn set_uuids(&mut self, value: Vec<String>) {
-        self.uuids = value;
+    pub fn set_uuids(&mut self, value: Vec<String>) -> Result<(), Box<Error>> {
+        Ok(self.uuids = value)
     }
 
     pub fn get_modalias(&self) ->  Result<(String, u32, u32, u32), Box<Error>> {
@@ -265,8 +260,8 @@ impl FakeBluetoothAdapter {
         (device[0] as u32) * 16 * 16 + (device[1] as u32)))
     }
 
-    pub fn set_modalias(&mut self, value: String) {
-        self.modalias = value;
+    pub fn set_modalias(&mut self, value: String) -> Result<(), Box<Error>> {
+        Ok(self.modalias = value)
     }
 
     pub fn get_vendor_id_source(&self) -> Result<String, Box<Error>> {

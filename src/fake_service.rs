@@ -54,39 +54,39 @@ impl FakeBluetoothGATTService {
         Ok(self.device.clone())
     }
 
-    pub fn set_device(&mut self, device: Arc<FakeBluetoothDevice>) {
-        self.device = device;
+    pub fn set_device(&mut self, device: Arc<FakeBluetoothDevice>) -> Result<(), Box<Error>> {
+        Ok(self.device = device)
     }
 
     pub fn get_gatt_characteristics(&self) -> Result<Vec<Arc<FakeBluetoothGATTCharacteristic>>, Box<Error>> {
         Ok(self.gatt_characteristics.clone())
     }
 
-    pub fn set_gatt_characteristics(&mut self, characteristics: Vec<Arc<FakeBluetoothGATTCharacteristic>>) {
-        self.gatt_characteristics = characteristics;
+    pub fn set_gatt_characteristics(&mut self, characteristics: Vec<Arc<FakeBluetoothGATTCharacteristic>>) -> Result<(), Box<Error>> {
+        Ok(self.gatt_characteristics = characteristics)
     }
 
     pub fn is_primary(&self) -> Result<bool, Box<Error>> {
         Ok(self.is_primary)
     }
 
-    pub fn set_is_primary(&mut self, value: bool) {
-        self.is_primary = value;
+    pub fn set_is_primary(&mut self, value: bool) -> Result<(), Box<Error>> {
+        Ok(self.is_primary = value)
     }
 
     pub fn get_includes(&self) -> Result<Vec<Arc<FakeBluetoothGATTService>>, Box<Error>> {
         Ok(self.included_services.clone())
     }
 
-    pub fn set_includes(&mut self, included_services: Vec<Arc<FakeBluetoothGATTService>>) {
-        self.included_services = included_services;
+    pub fn set_includes(&mut self, included_services: Vec<Arc<FakeBluetoothGATTService>>) -> Result<(), Box<Error>> {
+        Ok(self.included_services = included_services)
     }
 
     pub fn get_uuid(&self) -> Result<String, Box<Error>> {
         Ok(self.uuid.clone())
     }
 
-    pub fn set_uuid(&mut self, uuid: String) {
-        self.uuid = uuid;
+    pub fn set_uuid(&mut self, uuid: String) -> Result<(), Box<Error>> {
+        Ok(self.uuid = uuid)
     }
 }

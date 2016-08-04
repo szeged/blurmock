@@ -111,56 +111,56 @@ impl FakeBluetoothDevice {
         Ok(self.adapter.clone())
     }
 
-    pub fn set_adapter(&mut self, adapter: Arc<FakeBluetoothAdapter>) {
-        self.adapter = adapter;
+    pub fn set_adapter(&mut self, adapter: Arc<FakeBluetoothAdapter>) -> Result<(), Box<Error>> {
+        Ok(self.adapter = adapter)
     }
 
     pub fn get_address(&self) -> Result<String, Box<Error>> {
         Ok(self.address.clone())
     }
 
-    pub fn set_address(&mut self, address: String) {
-        self.address = address;
+    pub fn set_address(&mut self, address: String) -> Result<(), Box<Error>> {
+        Ok(self.address = address)
     }
 
     pub fn get_name(&self) -> Result<String, Box<Error>> {
         Ok(self.name.clone())
     }
 
-    pub fn set_name(&mut self, name: String) {
-        self.name = name;
+    pub fn set_name(&mut self, name: String) -> Result<(), Box<Error>> {
+        Ok(self.name = name)
     }
 
     pub fn get_icon(&self) -> Result<String, Box<Error>> {
         Ok(self.icon.clone())
     }
 
-    pub fn set_icon(&mut self, value: String) {
-        self.icon = value;
+    pub fn set_icon(&mut self, value: String) -> Result<(), Box<Error>> {
+        Ok(self.icon = value)
     }
 
     pub fn get_class(&self) -> Result<u32, Box<Error>> {
         Ok(self.class)
     }
 
-    pub fn set_class(&mut self, value: u32) {
-        self.class = value;
+    pub fn set_class(&mut self, value: u32) -> Result<(), Box<Error>> {
+        Ok(self.class = value)
     }
 
     pub fn get_appearance(&self) -> Result<u16, Box<Error>> {
         Ok(self.appearance)
     }
 
-    pub fn set_appearance(&mut self, appearance: u16) {
-        self.appearance = appearance;
+    pub fn set_appearance(&mut self, appearance: u16) -> Result<(), Box<Error>> {
+        Ok(self.appearance = appearance)
     }
 
     pub fn get_uuids(&self) -> Result<Vec<String>, Box<Error>> {
         Ok(self.uuids.clone())
     }
 
-    pub fn set_uuids(&mut self, uuids: Vec<String>) {
-        self.uuids = uuids;
+    pub fn set_uuids(&mut self, uuids: Vec<String>) -> Result<(), Box<Error>> {
+        Ok(self.uuids = uuids)
     }
 
     pub fn is_paired(&self) -> Result<bool, Box<Error>> {
@@ -179,24 +179,24 @@ impl FakeBluetoothDevice {
         Ok(self.is_connected)
     }
 
-    pub fn set_connected(&mut self, connected: bool) {
-        self.is_connected = connected;
+    pub fn set_connected(&mut self, connected: bool) -> Result<(), Box<Error>> {
+        Ok(self.is_connected = connected)
     }
 
     pub fn is_trusted(&self) -> Result<bool, Box<Error>> {
         Ok(self.is_trusted)
     }
 
-    pub fn set_trusted(&mut self, value: bool) {
-        self.is_trusted = value;
+    pub fn set_trusted(&mut self, value: bool) -> Result<(), Box<Error>> {
+        Ok(self.is_trusted = value)
     }
 
     pub fn is_blocked(&self) -> Result<bool, Box<Error>> {
         Ok(self.is_blocked)
     }
 
-    pub fn set_blocked(&mut self, blocked: bool) {
-        self.is_blocked = blocked;
+    pub fn set_blocked(&mut self, blocked: bool) -> Result<(), Box<Error>> {
+        Ok(self.is_blocked = blocked)
     }
 
     pub fn get_alias(&self) -> Result<String, Box<Error>> {
@@ -204,16 +204,15 @@ impl FakeBluetoothDevice {
     }
 
     pub fn set_alias(&mut self, value: String) -> Result<(), Box<Error>> {
-        self.alias = value;
-        Ok(())
+        Ok(self.alias = value)
     }
 
     pub fn is_legacy_pairing(&self) -> Result<bool, Box<Error>> {
         Ok(self.is_legacy_pairing)
     }
 
-    pub fn set_legacy_pairing(&mut self, value: bool) {
-        self.is_legacy_pairing = value;
+    pub fn set_legacy_pairing(&mut self, value: bool) -> Result<(), Box<Error>> {
+        Ok(self.is_legacy_pairing = value)
     }
 
     pub fn get_modalias(&self) ->  Result<(String, u32, u32, u32), Box<Error>> {
@@ -230,8 +229,8 @@ impl FakeBluetoothDevice {
         (device[0] as u32) * 16 * 16 + (device[1] as u32)))
     }
 
-    pub fn set_modalias(&mut self, value: String) {
-        self.modalias = value;
+    pub fn set_modalias(&mut self, value: String) -> Result<(), Box<Error>> {
+        Ok(self.modalias = value)
     }
 
     pub fn get_vendor_id_source(&self) -> Result<String, Box<Error>> {
@@ -258,24 +257,24 @@ impl FakeBluetoothDevice {
         Ok(self.rssi)
     }
 
-    pub fn set_rssi(&mut self, rssi: i16) {
-        self.rssi = rssi;
+    pub fn set_rssi(&mut self, rssi: i16) -> Result<(), Box<Error>> {
+        Ok(self.rssi = rssi)
     }
 
     pub fn get_tx_power(&self) -> Result<i16, Box<Error>> {
         Ok(self.tx_power)
     }
 
-    pub fn set_tx_power(&mut self, tx_power: i16) {
-        self.tx_power = tx_power;
+    pub fn set_tx_power(&mut self, tx_power: i16) -> Result<(), Box<Error>> {
+        Ok(self.tx_power = tx_power)
     }
 
     pub fn get_gatt_services(&self) -> Result<Vec<Arc<FakeBluetoothGATTService>>, Box<Error>> {
         Ok(self.gatt_services.clone())
     }
 
-    pub fn set_gatt_service(&mut self, services: Vec<Arc<FakeBluetoothGATTService>>) {
-        self.gatt_services = services;
+    pub fn set_gatt_service(&mut self, services: Vec<Arc<FakeBluetoothGATTService>>) -> Result<(), Box<Error>> {
+        Ok(self.gatt_services = services)
     }
 
     pub fn connect_profile(&self, _uuid: String) -> Result<(), Box<Error>> {

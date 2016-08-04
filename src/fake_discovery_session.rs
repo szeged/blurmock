@@ -1,6 +1,6 @@
 use fake_adapter::FakeBluetoothAdapter;
 use std::error::Error;
-use std::sync::Arc; 
+use std::sync::Arc;
 
 #[derive(Debug)]
 pub struct FakeBluetoothDiscoverySession {

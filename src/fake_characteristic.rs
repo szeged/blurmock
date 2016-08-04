@@ -58,24 +58,24 @@ impl FakeBluetoothGATTCharacteristic {
         Ok(self.uuid.clone())
     }
 
-    pub fn set_uuid(&mut self, uuid: String) {
-        self.uuid = uuid;
+    pub fn set_uuid(&mut self, uuid: String) -> Result<(), Box<Error>> {
+        Ok(self.uuid = uuid)
     }
 
     pub fn get_service(&self) -> Result<Arc<FakeBluetoothGATTService>, Box<Error>> {
         Ok(self.service.clone())
     }
 
-    pub fn set_service(&mut self, service: Arc<FakeBluetoothGATTService>) {
-        self.service = service;
+    pub fn set_service(&mut self, service: Arc<FakeBluetoothGATTService>) -> Result<(), Box<Error>> {
+        Ok(self.service = service)
     }
 
     pub fn get_value(&self) -> Result<Vec<u8>, Box<Error>> {
         Ok(self.value.clone())
     }
 
-    pub fn set_value(&mut self, value: Vec<u8>) {
-        self.value = value;
+    pub fn set_value(&mut self, value: Vec<u8>) -> Result<(), Box<Error>> {
+        Ok(self.value = value)
     }
 
     pub fn is_notifying(&self) -> Result<bool, Box<Error>> {
@@ -94,16 +94,16 @@ impl FakeBluetoothGATTCharacteristic {
         Ok(self.flags.clone())
     }
 
-    pub fn set_flags(&mut self, flags: Vec<String>) {
-        self.flags = flags;
+    pub fn set_flags(&mut self, flags: Vec<String>) -> Result<(), Box<Error>> {
+        Ok(self.flags = flags)
     }
 
     pub fn get_gatt_descriptors(&self) -> Result<Vec<Arc<FakeBluetoothGATTDescriptor>>, Box<Error>> {
         Ok(self.descriptors.clone())
     }
 
-    pub fn set_gatt_descriptors(&mut self, descriptors: Vec<Arc<FakeBluetoothGATTDescriptor>>) {
-        self.descriptors = descriptors;
+    pub fn set_gatt_descriptors(&mut self, descriptors: Vec<Arc<FakeBluetoothGATTDescriptor>>) -> Result<(), Box<Error>> {
+        Ok(self.descriptors = descriptors)
     }
 
     pub fn read_value(&self) -> Result<Vec<u8>, Box<Error>> {
@@ -112,7 +112,6 @@ impl FakeBluetoothGATTCharacteristic {
 
     // Try some other workout if &mut self not works!
     pub fn write_value(&mut self, value: Vec<u8>) -> Result<(), Box<Error>> {
-        self.value = value;
-        Ok(())
+        self.set_value(value)
     }
 }
