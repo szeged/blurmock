@@ -111,8 +111,9 @@ impl FakeBluetoothAdapter {
         Ok(self.is_powered)
     }
 
-    pub fn set_powered(&mut self, value: bool) {
-        self.is_powered = value
+    pub fn set_powered(&mut self, value: bool) -> Result<(), Box<Error>> {
+        self.is_powered = value;
+        Ok(())
     }
 
     pub fn get_can_start_discovery(&self) -> Result<bool, Box<Error>> {
@@ -131,7 +132,7 @@ impl FakeBluetoothAdapter {
         self.can_stop_discovery = value;
     }
 
-    pub fn get_devices(&self) -> Result<Vec<Arc<FakeBluetoothDevice>>, Box<Error>> {
+    pub fn get_device_list(&self) -> Result<Vec<Arc<FakeBluetoothDevice>>, Box<Error>> {
         Ok(self.devices.clone())
     }
 
@@ -185,8 +186,9 @@ impl FakeBluetoothAdapter {
         Ok(self.alias.clone())
     }
 
-    pub fn set_alias(&mut self, value: String) {
+    pub fn set_alias(&mut self, value: String) -> Result<(), Box<Error>> {
         self.alias = value;
+        Ok(())
     }
 
     pub fn get_class(&self) -> Result<u32, Box<Error>> {
@@ -201,32 +203,36 @@ impl FakeBluetoothAdapter {
         Ok(self.is_discoverable)
     }
 
-    pub fn set_discoverable(&mut self, value: bool) {
+    pub fn set_discoverable(&mut self, value: bool) -> Result<(), Box<Error>> {
         self.is_discoverable = value;
+        Ok(())
     }
 
     pub fn is_pairable(&self) -> Result<bool, Box<Error>> {
         Ok(self.is_pairable)
     }
 
-    pub fn set_pairable(&mut self, value: bool) {
+    pub fn set_pairable(&mut self, value: bool) -> Result<(), Box<Error>> {
         self.is_pairable = value;
+        Ok(())
     }
 
     pub fn get_pairable_timeout(&self) -> Result<u32, Box<Error>> {
         Ok(self.pairable_timeout)
     }
 
-    pub fn set_pairable_timeout(&mut self, value: u32) {
+    pub fn set_pairable_timeout(&mut self, value: u32) -> Result<(), Box<Error>> {
         self.pairable_timeout = value;
+        Ok(())
     }
 
     pub fn get_discoverable_timeout(&self) -> Result<u32, Box<Error>> {
         Ok(self.discoverable_timeout)
     }
 
-    pub fn set_discoverable_timeout(&mut self, value: u32) {
+    pub fn set_discoverable_timeout(&mut self, value: u32) -> Result<(), Box<Error>> {
         self.discoverable_timeout = value;
+        Ok(())
     }
 
     pub fn is_discovering(&self) -> Result<bool, Box<Error>> {

@@ -74,11 +74,11 @@ impl FakeBluetoothGATTService {
         self.is_primary = value;
     }
 
-    pub fn get_included_services(&self) -> Result<Vec<Arc<FakeBluetoothGATTService>>, Box<Error>> {
+    pub fn get_includes(&self) -> Result<Vec<Arc<FakeBluetoothGATTService>>, Box<Error>> {
         Ok(self.included_services.clone())
     }
 
-    pub fn set_included_services(&mut self, included_services: Vec<Arc<FakeBluetoothGATTService>>) {
+    pub fn set_includes(&mut self, included_services: Vec<Arc<FakeBluetoothGATTService>>) {
         self.included_services = included_services;
     }
 

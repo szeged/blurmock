@@ -199,8 +199,9 @@ impl FakeBluetoothDevice {
         Ok(self.alias.clone())
     }
 
-    pub fn set_alias(&mut self, value: String) {
-        self.alias = value
+    pub fn set_alias(&mut self, value: String) -> Result<(), Box<Error>> {
+        self.alias = value;
+        Ok(())
     }
 
     pub fn is_legacy_pairing(&self) -> Result<bool, Box<Error>> {
