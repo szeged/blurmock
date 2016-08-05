@@ -131,12 +131,24 @@ impl FakeBluetoothAdapter {
         Ok(self.can_stop_discovery = value)
     }
 
-    pub fn get_device_list(&self) -> Result<Vec<Arc<FakeBluetoothDevice>>, Box<Error>> {
+    pub fn get_device_list(&self) -> Result<Vec<String>, Box<Error>> {
+        let mut names = vec![];
+        for device in &self.devices {
+            names.push(device.get_name().unwrap());
+        }
+        Ok(names)
+    }
+
+    pub fn get_devices(&self) -> Result<Vec<Arc<FakeBluetoothDevice>>, Box<Error>> {
         Ok(self.devices.clone())
     }
 
     pub fn set_devices(&mut self, devices: Vec<Arc<FakeBluetoothDevice>>) -> Result<(), Box<Error>> {
         Ok(self.devices = devices)
+    }
+
+    pub fn add_device(&mut self, device: Arc<FakeBluetoothDevice>) -> Result<(), Box<Error>> {
+        Ok(self.devices.push(device))
     }
 
     pub fn get_first_device(&self) -> Result<Arc<FakeBluetoothDevice>, Box<Error>> {

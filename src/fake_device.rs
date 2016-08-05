@@ -29,7 +29,7 @@ pub struct FakeBluetoothDevice {
 }
 
 impl FakeBluetoothDevice {
-    pub fn new(object_path: String,
+    /*pub fn new(object_path: String,
                adapter: Arc<FakeBluetoothAdapter>,
                address: String,
                appearance: u16,
@@ -72,6 +72,35 @@ impl FakeBluetoothDevice {
             tx_power: tx_power,
             modalias: modalias,
         }
+    }*/
+
+    pub fn new(adapter: Arc<FakeBluetoothAdapter>,
+               name: String)
+               -> Arc<FakeBluetoothDevice> {
+        let device = Arc::new(FakeBluetoothDevice{
+            object_path: String::new(),
+            adapter: adapter.clone(),
+            address: String::new(),
+            appearance: 0,
+            class: 0,
+            gatt_services: vec![],
+            is_paired: false,
+            is_connectable: false,
+            is_connected: false,
+            is_trusted: false,
+            is_blocked: false,
+            is_legacy_pairing: false,
+            uuids: vec![],
+            name: name,
+            icon: String::new(),
+            alias: String::new(),
+            product_version: 0,
+            rssi: 0,
+            tx_power: 0,
+            modalias: String::new(),
+        });
+        let _ = Arc::make_mut(&mut adapter.clone()).add_device(device.clone());
+        device
     }
 
     pub fn new_empty() -> FakeBluetoothDevice {
