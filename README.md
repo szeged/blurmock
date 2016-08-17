@@ -1,1 +1,1 @@
-# fake-blurz
+# Bluetooth mock api for Rust
