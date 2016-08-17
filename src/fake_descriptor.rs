@@ -4,7 +4,7 @@ use std::sync::Arc;
 
 #[derive(Clone, Debug)]
 pub struct FakeBluetoothGATTDescriptor {
-    object_path: String,
+    id: String,
     uuid: String,
     characteristic: Arc<FakeBluetoothGATTCharacteristic>,
     value: Vec<u8>,
@@ -12,37 +12,41 @@ pub struct FakeBluetoothGATTDescriptor {
 }
 
 impl FakeBluetoothGATTDescriptor {
-    pub fn new(object_path: String,
+    pub fn new(id: String,
                uuid: String,
                characteristic: Arc<FakeBluetoothGATTCharacteristic>,
                value: Vec<u8>,
                flags: Vec<String>)
-               -> FakeBluetoothGATTDescriptor {
-        FakeBluetoothGATTDescriptor {
-            object_path: object_path,
+               -> Arc<FakeBluetoothGATTDescriptor> {
+        let descriptor = Arc::new(FakeBluetoothGATTDescriptor{
+            id: id,
             uuid: uuid,
             characteristic: characteristic,
             value: value,
             flags: flags,
-        }
+        });
+        let _ = Arc::make_mut(&mut descriptor.characteristic.clone()).add_descriptor(descriptor.clone());
+        descriptor
     }
 
-    pub fn new_empty() -> FakeBluetoothGATTDescriptor {
-        FakeBluetoothGATTDescriptor {
-            object_path: String::new(),
-            uuid: String::new(),
-            characteristic: Arc::new(FakeBluetoothGATTCharacteristic::new_empty()),
-            value: vec![],
-            flags: vec![],
-        }
+    pub fn new_empty(characteristic: Arc<FakeBluetoothGATTCharacteristic>,
+                     descriptor_id: String)
+                     -> Arc<FakeBluetoothGATTDescriptor> {
+        FakeBluetoothGATTDescriptor::new(
+            /*id*/ characteristic.get_id() + &descriptor_id,
+            /*uuid*/ String::new(),
+            /*characteristic*/ characteristic,
+            /*value*/ vec!(),
+            /*flags*/ vec!(),
+        )
     }
 
     pub fn get_id(&self) -> String {
-        self.object_path.clone()
+        self.id.clone()
     }
 
     pub fn set_id(&mut self, path: String) {
-        self.object_path = path;
+        self.id = path;
     }
 
     pub fn get_uuid(&self) -> Result<String, Box<Error>> {

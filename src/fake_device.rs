@@ -6,7 +6,7 @@ use rustc_serialize::hex::FromHex;
 
 #[derive(Clone, Debug)]
 pub struct FakeBluetoothDevice {
-    object_path: String,
+    id: String,
     adapter: Arc<FakeBluetoothAdapter>,
     address: String,
     appearance: u16,
@@ -29,7 +29,7 @@ pub struct FakeBluetoothDevice {
 }
 
 impl FakeBluetoothDevice {
-    /*pub fn new(object_path: String,
+    pub fn new(id: String,
                adapter: Arc<FakeBluetoothAdapter>,
                address: String,
                appearance: u16,
@@ -49,9 +49,9 @@ impl FakeBluetoothDevice {
                rssi: i16,
                tx_power: i16,
                modalias: String)
-               -> FakeBluetoothDevice {
-        FakeBluetoothDevice{
-            object_path: object_path,
+               -> Arc<FakeBluetoothDevice> {
+        let device = Arc::new(FakeBluetoothDevice{
+            id: id,
             adapter: adapter,
             address: address,
             appearance: appearance,
@@ -71,69 +71,43 @@ impl FakeBluetoothDevice {
             rssi: rssi,
             tx_power: tx_power,
             modalias: modalias,
-        }
-    }*/
-
-    pub fn new(adapter: Arc<FakeBluetoothAdapter>,
-               name: String)
-               -> Arc<FakeBluetoothDevice> {
-        let device = Arc::new(FakeBluetoothDevice{
-            object_path: String::new(),
-            adapter: adapter.clone(),
-            address: String::new(),
-            appearance: 0,
-            class: 0,
-            gatt_services: vec![],
-            is_paired: false,
-            is_connectable: false,
-            is_connected: false,
-            is_trusted: false,
-            is_blocked: false,
-            is_legacy_pairing: false,
-            uuids: vec![],
-            name: name,
-            icon: String::new(),
-            alias: String::new(),
-            product_version: 0,
-            rssi: 0,
-            tx_power: 0,
-            modalias: String::new(),
         });
-        let _ = Arc::make_mut(&mut adapter.clone()).add_device(device.clone());
+        let _ = Arc::make_mut(&mut device.adapter.clone()).add_device(device.clone());
         device
     }
 
-    pub fn new_empty() -> FakeBluetoothDevice {
-        FakeBluetoothDevice{
-            object_path: String::new(),
-            adapter: Arc::new(FakeBluetoothAdapter::new_empty()),
-            address: String::new(),
-            appearance: 0,
-            class: 0,
-            gatt_services: vec![],
-            is_paired: false,
-            is_connectable: false,
-            is_connected: false,
-            is_trusted: false,
-            is_blocked: false,
-            is_legacy_pairing: false,
-            uuids: vec![],
-            name: String::new(),
-            icon: String::new(),
-            alias: String::new(),
-            product_version: 0,
-            rssi: 0,
-            tx_power: 0,
-            modalias: String::new(),
-        }
+    pub fn new_empty(adapter: Arc<FakeBluetoothAdapter>, device_id: String)
+            -> Arc<FakeBluetoothDevice> {
+        FakeBluetoothDevice::new(
+            /*id*/ adapter.get_id() + &device_id,
+            /*adapter*/ adapter,
+            /*address*/ String::new(),
+            /*appearance*/ 0,
+            /*class*/ 0,
+            /*gatt_services*/ vec!(),
+            /*is_paired*/ false,
+            /*is_connectable*/ false,
+            /*is_connected*/ false,
+            /*is_trusted*/ false,
+            /*is_blocked*/ false,
+            /*is_legacy_pairing*/ false,
+            /*uuids*/ vec!(),
+            /*name*/ String::new(),
+            /*icon*/ String::new(),
+            /*alias*/ String::new(),
+            /*product_version*/ 0,
+            /*rssi*/ 0,
+            /*tx_power*/ 0,
+            /*modalias*/ String::new(),
+        )
     }
 
     pub fn get_id(&self) -> String {
-        self.object_path.clone()
+        self.id.clone()
     }
 
-    pub fn set_id(&mut self, object_path: String) {
-        self.object_path = object_path;
+    pub fn set_id(&mut self, id: String) {
+        self.id = id;
     }
 
     pub fn get_adapter(&self) -> Result<Arc<FakeBluetoothAdapter>, Box<Error>> {
@@ -302,8 +276,12 @@ impl FakeBluetoothDevice {
         Ok(self.gatt_services.clone())
     }
 
-    pub fn set_gatt_service(&mut self, services: Vec<Arc<FakeBluetoothGATTService>>) -> Result<(), Box<Error>> {
+    pub fn set_gatt_services(&mut self, services: Vec<Arc<FakeBluetoothGATTService>>) -> Result<(), Box<Error>> {
         Ok(self.gatt_services = services)
+    }
+
+    pub fn add_service(&mut self, service: Arc<FakeBluetoothGATTService>) -> Result<(), Box<Error>> {
+        Ok(self.gatt_services.push(service))
     }
 
     pub fn connect_profile(&self, _uuid: String) -> Result<(), Box<Error>> {
@@ -318,17 +296,15 @@ impl FakeBluetoothDevice {
         if self.is_connectable && !self.is_connected {
             self.is_connected = true;
             return Ok(());
-        } else {
-            return Err(Box::from("Could not connect to the device."));
         }
+        return Err(Box::from("Could not connect to the device."));
     }
 
     pub fn disconnect(&mut self) -> Result<(), Box<Error>>{
         if self.is_connected {
             self.is_connected = false;
             return Ok(());
-        } else {
-            return Err(Box::from("The device is not connected."));
         }
+        return Err(Box::from("The device is not connected."));
     }
 }

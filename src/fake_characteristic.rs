@@ -5,53 +5,57 @@ use std::sync::Arc;
 
 #[derive(Clone, Debug)]
 pub struct FakeBluetoothGATTCharacteristic {
-    object_path: String,
+    id: String,
     uuid: String,
     service: Arc<FakeBluetoothGATTService>,
     value: Vec<u8>,
     is_notifying: bool,
     flags: Vec<String>,
-    descriptors: Vec<Arc<FakeBluetoothGATTDescriptor>>,
+    gatt_descriptors: Vec<Arc<FakeBluetoothGATTDescriptor>>,
 }
 
 impl FakeBluetoothGATTCharacteristic {
-    pub fn new(object_path: String,
+    pub fn new(id: String,
                uuid: String,
                service: Arc<FakeBluetoothGATTService>,
                value: Vec<u8>,
                is_notifying: bool,
                flags: Vec<String>,
-               descriptors: Vec<Arc<FakeBluetoothGATTDescriptor>>)
-               -> FakeBluetoothGATTCharacteristic {
-        FakeBluetoothGATTCharacteristic {
-            object_path: object_path,
+               gatt_descriptors: Vec<Arc<FakeBluetoothGATTDescriptor>>)
+               -> Arc<FakeBluetoothGATTCharacteristic> {
+        let characteristic = Arc::new(FakeBluetoothGATTCharacteristic{
+            id: id,
             uuid: uuid,
             service: service,
             value: value,
             is_notifying: is_notifying,
             flags: flags,
-            descriptors: descriptors,
-        }
+            gatt_descriptors: gatt_descriptors,
+        });
+        let _ = Arc::make_mut(&mut characteristic.service.clone()).add_characteristic(characteristic.clone());
+        characteristic
     }
 
-    pub fn new_empty() -> FakeBluetoothGATTCharacteristic {
-        FakeBluetoothGATTCharacteristic {
-            object_path: String::new(),
-            uuid: String::new(),
-            service: Arc::new(FakeBluetoothGATTService::new_empty()),
-            value: vec![],
-            is_notifying: false,
-            flags: vec![],
-            descriptors: vec![],
-        }
+    pub fn new_empty(service: Arc<FakeBluetoothGATTService>,
+                     characteristic_id: String)
+                     -> Arc<FakeBluetoothGATTCharacteristic> {
+        FakeBluetoothGATTCharacteristic::new(
+            /*id*/ service.get_id() + &characteristic_id,
+            /*uuid*/ String::new(),
+            /*service*/ service,
+            /*value*/ vec!(),
+            /*is_notifying*/ false,
+            /*flags*/ vec!(),
+            /*gatt_descriptors*/ vec!(),
+        )
     }
 
     pub fn get_id(&self) -> String {
-        self.object_path.clone()
+        self.id.clone()
     }
 
     pub fn set_id(&mut self, path: String) {
-        self.object_path = path;
+        self.id = path;
     }
 
     pub fn get_uuid(&self) -> Result<String, Box<Error>> {
@@ -99,11 +103,15 @@ impl FakeBluetoothGATTCharacteristic {
     }
 
     pub fn get_gatt_descriptors(&self) -> Result<Vec<Arc<FakeBluetoothGATTDescriptor>>, Box<Error>> {
-        Ok(self.descriptors.clone())
+        Ok(self.gatt_descriptors.clone())
     }
 
-    pub fn set_gatt_descriptors(&mut self, descriptors: Vec<Arc<FakeBluetoothGATTDescriptor>>) -> Result<(), Box<Error>> {
-        Ok(self.descriptors = descriptors)
+    pub fn set_gatt_descriptors(&mut self, gatt_descriptors: Vec<Arc<FakeBluetoothGATTDescriptor>>) -> Result<(), Box<Error>> {
+        Ok(self.gatt_descriptors = gatt_descriptors)
+    }
+
+    pub fn add_descriptor(&mut self, descriptor: Arc<FakeBluetoothGATTDescriptor>) -> Result<(), Box<Error>> {
+        Ok(self.gatt_descriptors.push(descriptor))
     }
 
     pub fn read_value(&self) -> Result<Vec<u8>, Box<Error>> {

@@ -5,7 +5,7 @@ use std::sync::Arc;
 
 #[derive(Clone, Debug)]
 pub struct FakeBluetoothGATTService {
-    object_path: String,
+    id: String,
     device: Arc<FakeBluetoothDevice>,
     gatt_characteristics: Vec<Arc<FakeBluetoothGATTCharacteristic>>,
     is_primary: bool,
@@ -14,40 +14,44 @@ pub struct FakeBluetoothGATTService {
 }
 
 impl FakeBluetoothGATTService {
-    pub fn new(object_path: String,
+    pub fn new(id: String,
                device: Arc<FakeBluetoothDevice>,
                gatt_characteristics: Vec<Arc<FakeBluetoothGATTCharacteristic>>,
                is_primary: bool,
                included_services: Vec<Arc<FakeBluetoothGATTService>>,
                uuid: String)
-               -> FakeBluetoothGATTService {
-        FakeBluetoothGATTService {
-            object_path: object_path,
+               -> Arc<FakeBluetoothGATTService> {
+        let service = Arc::new(FakeBluetoothGATTService{
+            id: id,
             device: device,
             gatt_characteristics: gatt_characteristics,
             is_primary: is_primary,
             included_services: included_services,
             uuid: uuid,
-        }
+        });
+        let _ = Arc::make_mut(&mut service.device.clone()).add_service(service.clone());
+        service
     }
 
-    pub fn new_empty() -> FakeBluetoothGATTService {
-        FakeBluetoothGATTService {
-            object_path: String::new(),
-            device: Arc::new(FakeBluetoothDevice::new_empty()),
-            gatt_characteristics: vec![],
-            is_primary: false,
-            included_services: vec![],
-            uuid: String::new(),
-        }
+    pub fn new_empty(device: Arc<FakeBluetoothDevice>,
+                     service_id: String)
+                     -> Arc<FakeBluetoothGATTService> {
+        FakeBluetoothGATTService::new(
+            /*id*/ device.get_id() + &service_id,
+            /*device*/ device,
+            /*gatt_characteristics*/ vec!(),
+            /*is_primary*/ false,
+            /*included_services*/ vec!(),
+            /*uuid*/ String::new(),
+        )
     }
 
     pub fn get_id(&self) -> String {
-        self.object_path.clone()
+        self.id.clone()
     }
 
     pub fn set_id(&mut self, path: String) {
-        self.object_path = path;
+        self.id = path;
     }
 
     pub fn get_device(&self) -> Result<Arc<FakeBluetoothDevice>, Box<Error>> {
@@ -64,6 +68,10 @@ impl FakeBluetoothGATTService {
 
     pub fn set_gatt_characteristics(&mut self, characteristics: Vec<Arc<FakeBluetoothGATTCharacteristic>>) -> Result<(), Box<Error>> {
         Ok(self.gatt_characteristics = characteristics)
+    }
+
+    pub fn add_characteristic(&mut self, characteristic: Arc<FakeBluetoothGATTCharacteristic>) -> Result<(), Box<Error>> {
+        Ok(self.gatt_characteristics.push(characteristic))
     }
 
     pub fn is_primary(&self) -> Result<bool, Box<Error>> {

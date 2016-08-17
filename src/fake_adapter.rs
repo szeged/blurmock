@@ -6,13 +6,13 @@ use rustc_serialize::hex::FromHex;
 
 #[derive(Clone, Debug)]
 pub struct FakeBluetoothAdapter {
-    object_path: String,
+    id: String,
     is_present: bool,
     is_powered: bool,
     can_start_discovery: bool,
     can_stop_discovery: bool,
     devices: Vec<Arc<FakeBluetoothDevice>>,
-    addatas: Vec<String>,
+    ad_datas: Vec<String>,
     address: String,
     name: String,
     alias: String,
@@ -27,13 +27,13 @@ pub struct FakeBluetoothAdapter {
 }
 
 impl FakeBluetoothAdapter {
-    pub fn new(object_path: String,
+    pub fn new(id: String,
                is_present: bool,
                is_powered: bool,
                can_start_discovery: bool,
                can_stop_discovery: bool,
                devices: Vec<Arc<FakeBluetoothDevice>>,
-               addatas: Vec<String>,
+               ad_datas: Vec<String>,
                address: String,
                name: String,
                alias: String,
@@ -45,15 +45,15 @@ impl FakeBluetoothAdapter {
                is_discovering: bool,
                uuids: Vec<String>,
                modalias: String)
-               ->FakeBluetoothAdapter{
-        FakeBluetoothAdapter{
-            object_path: object_path,
+               -> Arc<FakeBluetoothAdapter> {
+        Arc::new(FakeBluetoothAdapter{
+            id: id,
             is_present: is_present,
             is_powered: is_powered,
             can_start_discovery: can_start_discovery,
             can_stop_discovery: can_stop_discovery,
             devices: devices,
-            addatas: addatas,
+            ad_datas: ad_datas,
             address: address,
             name: name,
             alias: alias,
@@ -65,38 +65,38 @@ impl FakeBluetoothAdapter {
             is_discovering: is_discovering,
             uuids: uuids,
             modalias: modalias,
-        }
+        })
     }
 
-    pub fn new_empty() -> FakeBluetoothAdapter {
-        FakeBluetoothAdapter {
-            object_path: String::new(),
-            is_present: false,
-            is_powered: false,
-            can_start_discovery: false,
-            can_stop_discovery: false,
-            devices: vec![],
-            addatas: vec![],
-            address: String::new(),
-            name: String::new(),
-            alias: String::new(),
-            class: 0,
-            is_discoverable: false,
-            is_pairable: false,
-            pairable_timeout: 0,
-            discoverable_timeout: 0,
-            is_discovering: false,
-            uuids: vec![],
-            modalias: String::new(),
-        }
+    pub fn new_empty(adapter_id: String) -> Arc<FakeBluetoothAdapter> {
+        FakeBluetoothAdapter::new(
+            /*id*/ adapter_id,
+            /*is_present*/ true,
+            /*is_powered*/ false,
+            /*can_start_discovery*/ false,
+            /*can_stop_discovery*/ false,
+            /*devices*/ vec![],
+            /*ad_datas*/ vec![],
+            /*address*/ String::new(),
+            /*name*/ String::new(),
+            /*alias*/ String::new(),
+            /*class*/ 0,
+            /*is_discoverable*/ false,
+            /*is_pairable*/ false,
+            /*pairable_timeout*/ 0,
+            /*discoverable_timeout*/ 0,
+            /*is_discovering*/ false,
+            /*uuids*/ vec![],
+            /*modalias*/ String::new(),
+        )
     }
 
     pub fn get_id(&self) -> String {
-        self.object_path.clone()
+        self.id.clone()
     }
 
     pub fn set_id(&mut self, value: String) {
-        self.object_path = value;
+        self.id = value;
     }
 
     pub fn is_present(&self) -> Result<bool, Box<Error>> {
@@ -158,19 +158,19 @@ impl FakeBluetoothAdapter {
         Ok(self.devices[0].clone())
     }
 
-    pub fn get_addatas(&self) -> Result<Vec<String>, Box<Error>> {
-        Ok(self.addatas.clone())
+    pub fn get_ad_datas(&self) -> Result<Vec<String>, Box<Error>> {
+        Ok(self.ad_datas.clone())
     }
 
-    pub fn set_addatas(&mut self, addatas: Vec<String>) -> Result<(), Box<Error>> {
-        Ok(self.addatas = addatas)
+    pub fn set_ad_datas(&mut self, ad_datas: Vec<String>) -> Result<(), Box<Error>> {
+        Ok(self.ad_datas = ad_datas)
     }
 
-    pub fn get_first_addata(&self) -> Result<String, Box<Error>> {
-        if self.addatas.is_empty() {
+    pub fn get_first_ad_data(&self) -> Result<String, Box<Error>> {
+        if self.ad_datas.is_empty() {
             return Err(Box::from("No addata found."))
         }
-        Ok(self.addatas[0].clone())
+        Ok(self.ad_datas[0].clone())
     }
 
     pub fn get_address(&self) -> Result<String, Box<Error>> {
