@@ -1,31 +1,32 @@
+use core::ops::Deref;
 use fake_adapter::FakeBluetoothAdapter;
 use fake_service::FakeBluetoothGATTService;
-use std::error::Error;
-use std::sync::Arc;
 use rustc_serialize::hex::FromHex;
+use std::error::Error;
+use std::sync::{Arc, Mutex};
 
 #[derive(Clone, Debug)]
 pub struct FakeBluetoothDevice {
-    id: String,
+    id: Arc<Mutex<String>>,
     adapter: Arc<FakeBluetoothAdapter>,
-    address: String,
-    appearance: u16,
-    class: u32,
-    gatt_services: Vec<Arc<FakeBluetoothGATTService>>,
-    is_paired: bool,
-    is_connectable: bool,
-    is_connected: bool,
-    is_trusted: bool,
-    is_blocked: bool,
-    is_legacy_pairing: bool,
-    uuids: Vec<String>,
-    name: String,
-    icon: String,
-    alias: String,
-    product_version: u32,
-    rssi: i16,
-    tx_power: i16,
-    modalias: String,
+    address: Arc<Mutex<String>>,
+    appearance: Arc<Mutex<u16>>,
+    class: Arc<Mutex<u32>>,
+    gatt_services: Arc<Mutex<Vec<Arc<FakeBluetoothGATTService>>>>,
+    is_paired: Arc<Mutex<bool>>,
+    is_connectable: Arc<Mutex<bool>>,
+    is_connected: Arc<Mutex<bool>>,
+    is_trusted: Arc<Mutex<bool>>,
+    is_blocked: Arc<Mutex<bool>>,
+    is_legacy_pairing: Arc<Mutex<bool>>,
+    uuids: Arc<Mutex<Vec<String>>>,
+    name: Arc<Mutex<String>>,
+    icon: Arc<Mutex<String>>,
+    alias: Arc<Mutex<String>>,
+    product_version: Arc<Mutex<u32>>,
+    rssi: Arc<Mutex<i16>>,
+    tx_power: Arc<Mutex<i16>>,
+    modalias: Arc<Mutex<String>>,
 }
 
 impl FakeBluetoothDevice {
@@ -50,36 +51,39 @@ impl FakeBluetoothDevice {
                tx_power: i16,
                modalias: String)
                -> Arc<FakeBluetoothDevice> {
+        if let Ok(existing_device) = adapter.get_device(id.clone()) {
+            return existing_device;
+        }
         let device = Arc::new(FakeBluetoothDevice{
-            id: id,
-            adapter: adapter,
-            address: address,
-            appearance: appearance,
-            class: class,
-            gatt_services: gatt_services,
-            is_paired: is_paired,
-            is_connectable: is_connectable,
-            is_connected: is_connected,
-            is_trusted: is_trusted,
-            is_blocked: is_blocked,
-            is_legacy_pairing: is_legacy_pairing,
-            uuids: uuids,
-            name: name,
-            icon: icon,
-            alias: alias,
-            product_version: product_version,
-            rssi: rssi,
-            tx_power: tx_power,
-            modalias: modalias,
+            id: Arc::new(Mutex::new(id)),
+            adapter: adapter.clone(),
+            address: Arc::new(Mutex::new(address)),
+            appearance: Arc::new(Mutex::new(appearance)),
+            class: Arc::new(Mutex::new(class)),
+            gatt_services: Arc::new(Mutex::new(gatt_services)),
+            is_paired: Arc::new(Mutex::new(is_paired)),
+            is_connectable: Arc::new(Mutex::new(is_connectable)),
+            is_connected: Arc::new(Mutex::new(is_connected)),
+            is_trusted: Arc::new(Mutex::new(is_trusted)),
+            is_blocked: Arc::new(Mutex::new(is_blocked)),
+            is_legacy_pairing: Arc::new(Mutex::new(is_legacy_pairing)),
+            uuids: Arc::new(Mutex::new(uuids)),
+            name: Arc::new(Mutex::new(name)),
+            icon: Arc::new(Mutex::new(icon)),
+            alias: Arc::new(Mutex::new(alias)),
+            product_version: Arc::new(Mutex::new(product_version)),
+            rssi: Arc::new(Mutex::new(rssi)),
+            tx_power: Arc::new(Mutex::new(tx_power)),
+            modalias: Arc::new(Mutex::new(modalias)),
         });
-        let _ = Arc::make_mut(&mut device.adapter.clone()).add_device(device.clone());
+        let _ = adapter.add_device(device.clone());
         device
     }
 
     pub fn new_empty(adapter: Arc<FakeBluetoothAdapter>, device_id: String)
             -> Arc<FakeBluetoothDevice> {
         FakeBluetoothDevice::new(
-            /*id*/ adapter.get_id() + &device_id,
+            /*id*/ device_id,
             /*adapter*/ adapter,
             /*address*/ String::new(),
             /*appearance*/ 0,
@@ -102,125 +106,86 @@ impl FakeBluetoothDevice {
         )
     }
 
-    pub fn get_id(&self) -> String {
-        self.id.clone()
-    }
+    make_getter!(get_id, id);
 
-    pub fn set_id(&mut self, id: String) {
-        self.id = id;
-    }
+    make_setter!(set_id, id);
 
     pub fn get_adapter(&self) -> Result<Arc<FakeBluetoothAdapter>, Box<Error>> {
         Ok(self.adapter.clone())
     }
 
-    pub fn set_adapter(&mut self, adapter: Arc<FakeBluetoothAdapter>) -> Result<(), Box<Error>> {
+    /*pub fn set_adapter(&self, adapter: Arc<FakeBluetoothAdapter>) -> Result<(), Box<Error>> {
         Ok(self.adapter = adapter)
+    }*/
+
+    make_getter!(get_address, address, String);
+
+    make_setter!(set_address, address, String);
+
+    make_getter!(get_name, name, String);
+
+    make_setter!(set_name, name, String);
+
+    make_getter!(get_icon, icon, String);
+
+    make_setter!(set_icon, icon, String);
+
+    make_getter!(get_class, class, u32);
+
+    make_setter!(set_class, class, u32);
+
+    make_getter!(get_appearance, appearance, u16);
+
+    make_setter!(set_appearance, appearance, u16);
+
+    make_getter!(get_uuids, uuids, Vec<String>);
+
+    make_setter!(set_uuids, uuids, Vec<String>);
+
+    make_getter!(is_paired);
+
+    make_setter!(set_paired, is_paired, bool);
+
+    pub fn pair(&self) -> Result<(), Box<Error>> {
+        self.set_paired(true)
     }
 
-    pub fn get_address(&self) -> Result<String, Box<Error>> {
-        Ok(self.address.clone())
+    pub fn cancel_pairing(&self) -> Result<(), Box<Error>> {
+        self.set_paired(false)
     }
 
-    pub fn set_address(&mut self, address: String) -> Result<(), Box<Error>> {
-        Ok(self.address = address)
-    }
+    make_getter!(is_connectable);
 
-    pub fn get_name(&self) -> Result<String, Box<Error>> {
-        Ok(self.name.clone())
-    }
+    make_setter!(set_connectable, is_connectable, bool);
 
-    pub fn set_name(&mut self, name: String) -> Result<(), Box<Error>> {
-        Ok(self.name = name)
-    }
+    make_getter!(is_connected);
 
-    pub fn get_icon(&self) -> Result<String, Box<Error>> {
-        Ok(self.icon.clone())
-    }
+    make_setter!(set_connected, is_connected, bool);
 
-    pub fn set_icon(&mut self, value: String) -> Result<(), Box<Error>> {
-        Ok(self.icon = value)
-    }
+    make_getter!(is_trusted);
 
-    pub fn get_class(&self) -> Result<u32, Box<Error>> {
-        Ok(self.class)
-    }
+    make_setter!(set_trusted, is_trusted, bool);
 
-    pub fn set_class(&mut self, value: u32) -> Result<(), Box<Error>> {
-        Ok(self.class = value)
-    }
+    make_getter!(is_blocked);
 
-    pub fn get_appearance(&self) -> Result<u16, Box<Error>> {
-        Ok(self.appearance)
-    }
+    make_setter!(set_blocked, is_blocked, bool);
 
-    pub fn set_appearance(&mut self, appearance: u16) -> Result<(), Box<Error>> {
-        Ok(self.appearance = appearance)
-    }
+    make_getter!(get_alias, alias, String);
 
-    pub fn get_uuids(&self) -> Result<Vec<String>, Box<Error>> {
-        Ok(self.uuids.clone())
-    }
+    make_setter!(set_alias, alias, String);
 
-    pub fn set_uuids(&mut self, uuids: Vec<String>) -> Result<(), Box<Error>> {
-        Ok(self.uuids = uuids)
-    }
+    make_getter!(is_legacy_pairing);
 
-    pub fn is_paired(&self) -> Result<bool, Box<Error>> {
-        Ok(self.is_paired)
-    }
-
-    pub fn pair(&mut self) -> Result<(), Box<Error>> {
-        Ok(self.is_paired = true)
-    }
-
-    pub fn cancel_pairing(&mut self) -> Result<(), Box<Error>> {
-        Ok(self.is_paired = false)
-    }
-
-    pub fn is_connected(&self) -> Result<bool, Box<Error>> {
-        Ok(self.is_connected)
-    }
-
-    pub fn set_connected(&mut self, connected: bool) -> Result<(), Box<Error>> {
-        Ok(self.is_connected = connected)
-    }
-
-    pub fn is_trusted(&self) -> Result<bool, Box<Error>> {
-        Ok(self.is_trusted)
-    }
-
-    pub fn set_trusted(&mut self, value: bool) -> Result<(), Box<Error>> {
-        Ok(self.is_trusted = value)
-    }
-
-    pub fn is_blocked(&self) -> Result<bool, Box<Error>> {
-        Ok(self.is_blocked)
-    }
-
-    pub fn set_blocked(&mut self, blocked: bool) -> Result<(), Box<Error>> {
-        Ok(self.is_blocked = blocked)
-    }
-
-    pub fn get_alias(&self) -> Result<String, Box<Error>> {
-        Ok(self.alias.clone())
-    }
-
-    pub fn set_alias(&mut self, value: String) -> Result<(), Box<Error>> {
-        Ok(self.alias = value)
-    }
-
-    pub fn is_legacy_pairing(&self) -> Result<bool, Box<Error>> {
-        Ok(self.is_legacy_pairing)
-    }
-
-    pub fn set_legacy_pairing(&mut self, value: bool) -> Result<(), Box<Error>> {
-        Ok(self.is_legacy_pairing = value)
-    }
+    make_setter!(set_legacy_pairing, is_legacy_pairing, bool);
 
     pub fn get_modalias(&self) ->  Result<(String, u32, u32, u32), Box<Error>> {
-        let ids: Vec<&str> = self.modalias.split(":").collect();
+        let cloned = self.modalias.clone();
+        let modalias = match cloned.lock() {
+            Ok(guard) => guard.deref().clone(),
+            Err(_) => return Err(Box::from("Could not get the value.")),
+        };
 
+        let ids: Vec<&str> = modalias.split(":").collect();
         let source = String::from(ids[0]);
         let vendor = ids[1][1..5].from_hex().unwrap();
         let product = ids[1][6..10].from_hex().unwrap();
@@ -232,9 +197,7 @@ impl FakeBluetoothDevice {
         (device[0] as u32) * 16 * 16 + (device[1] as u32)))
     }
 
-    pub fn set_modalias(&mut self, value: String) -> Result<(), Box<Error>> {
-        Ok(self.modalias = value)
-    }
+    make_setter!(set_modalias, modalias, String);
 
     pub fn get_vendor_id_source(&self) -> Result<String, Box<Error>> {
         let (vendor_id_source,_,_,_) = try!(self.get_modalias());
@@ -256,32 +219,36 @@ impl FakeBluetoothDevice {
         Ok(device_id)
     }
 
-    pub fn get_rssi(&self) -> Result<i16, Box<Error>> {
-        Ok(self.rssi)
+    make_getter!(get_rssi, rssi, i16);
+
+    make_setter!(set_rssi, rssi, i16);
+
+    make_getter!(get_tx_power, tx_power, i16);
+
+    make_setter!(set_tx_power, tx_power, i16);
+
+    make_getter!(get_gatt_services, gatt_services, Vec<Arc<FakeBluetoothGATTService>>);
+
+    make_setter!(set_gatt_services, gatt_services, Vec<Arc<FakeBluetoothGATTService>>);
+
+    pub fn get_gatt_service(&self, id: String) -> Result<Arc<FakeBluetoothGATTService>, Box<Error>> {
+        let services = try!(self.get_gatt_services());
+        for service in services {
+            let service_id = service.get_id();
+            if service_id == id {
+                return Ok(service);
+            }
+        }
+        Err(Box::from("No service exists with the given id."))
     }
 
-    pub fn set_rssi(&mut self, rssi: i16) -> Result<(), Box<Error>> {
-        Ok(self.rssi = rssi)
-    }
-
-    pub fn get_tx_power(&self) -> Result<i16, Box<Error>> {
-        Ok(self.tx_power)
-    }
-
-    pub fn set_tx_power(&mut self, tx_power: i16) -> Result<(), Box<Error>> {
-        Ok(self.tx_power = tx_power)
-    }
-
-    pub fn get_gatt_services(&self) -> Result<Vec<Arc<FakeBluetoothGATTService>>, Box<Error>> {
-        Ok(self.gatt_services.clone())
-    }
-
-    pub fn set_gatt_services(&mut self, services: Vec<Arc<FakeBluetoothGATTService>>) -> Result<(), Box<Error>> {
-        Ok(self.gatt_services = services)
-    }
-
-    pub fn add_service(&mut self, service: Arc<FakeBluetoothGATTService>) -> Result<(), Box<Error>> {
-        Ok(self.gatt_services.push(service))
+    pub fn add_service(&self, service: Arc<FakeBluetoothGATTService>) -> Result<(), Box<Error>> {
+        let cloned = self.gatt_services.clone();
+        let mut gatt_services = match cloned.lock() {
+            Ok(guard) => guard,
+            Err(_) => return Err(Box::from("Could not get the value.")),
+        };
+        Ok(gatt_services.push(service))
     }
 
     pub fn connect_profile(&self, _uuid: String) -> Result<(), Box<Error>> {
@@ -292,18 +259,24 @@ impl FakeBluetoothDevice {
         unimplemented!();
     }
 
-    pub fn connect(&mut self) -> Result<(), Box<Error>> {
-        if self.is_connectable && !self.is_connected {
-            self.is_connected = true;
+    pub fn connect(&self) -> Result<(), Box<Error>> {
+        let is_connectable = try!(self.is_connectable());
+        let is_connected = try!(self.is_connected());
+
+        if is_connected {
             return Ok(());
+        }
+        if is_connectable {
+            return self.set_connected(true);
         }
         return Err(Box::from("Could not connect to the device."));
     }
 
-    pub fn disconnect(&mut self) -> Result<(), Box<Error>>{
-        if self.is_connected {
-            self.is_connected = false;
-            return Ok(());
+    pub fn disconnect(&self) -> Result<(), Box<Error>>{
+        let is_connected = try!(self.is_connected());
+
+        if is_connected {
+            return self.set_connected(false);
         }
         return Err(Box::from("The device is not connected."));
     }

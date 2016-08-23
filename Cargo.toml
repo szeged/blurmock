@@ -1,7 +1,7 @@
 [package]
 name = "blurmock"
 version = "0.1.0"
-authors = ["fokinv <fokin.valentin@stud.u-szeged.hu>", "Attila Dusnoki <adusnoki@inf.u-szeged.hu>"]
+authors = ["fokinv <fokin.valentin@stud.u-szeged.hu>", "Attila Dusnoki <adusnoki@inf.u-szeged.hu>", "Zakor Gyula <zakorgy@inf.u-szeged.hu>"]
 repository = "https://github.com/szeged/blurmock"
 keywords = ["bluetooth", "blurmock", "ble", "fake", "mock", "test"]
 license = "BSD-2-Clause"

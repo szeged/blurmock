@@ -1,17 +1,18 @@
+use core::ops::Deref;
 use fake_descriptor::FakeBluetoothGATTDescriptor;
 use fake_service::FakeBluetoothGATTService;
 use std::error::Error;
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
 #[derive(Clone, Debug)]
 pub struct FakeBluetoothGATTCharacteristic {
-    id: String,
-    uuid: String,
+    id: Arc<Mutex<String>>,
+    uuid: Arc<Mutex<String>>,
     service: Arc<FakeBluetoothGATTService>,
-    value: Vec<u8>,
-    is_notifying: bool,
-    flags: Vec<String>,
-    gatt_descriptors: Vec<Arc<FakeBluetoothGATTDescriptor>>,
+    value: Arc<Mutex<Vec<u8>>>,
+    is_notifying: Arc<Mutex<bool>>,
+    flags: Arc<Mutex<Vec<String>>>,
+    gatt_descriptors: Arc<Mutex<Vec<Arc<FakeBluetoothGATTDescriptor>>>>,
 }
 
 impl FakeBluetoothGATTCharacteristic {
@@ -23,16 +24,19 @@ impl FakeBluetoothGATTCharacteristic {
                flags: Vec<String>,
                gatt_descriptors: Vec<Arc<FakeBluetoothGATTDescriptor>>)
                -> Arc<FakeBluetoothGATTCharacteristic> {
-        let characteristic = Arc::new(FakeBluetoothGATTCharacteristic{
-            id: id,
-            uuid: uuid,
-            service: service,
-            value: value,
-            is_notifying: is_notifying,
-            flags: flags,
-            gatt_descriptors: gatt_descriptors,
+        if let Ok(existing_characteristic) = service.get_gatt_characteristic(id.clone()) {
+            return existing_characteristic;
+        }
+        let characteristic = Arc::new(FakeBluetoothGATTCharacteristic {
+            id: Arc::new(Mutex::new(id)),
+            uuid: Arc::new(Mutex::new(uuid)),
+            service: service.clone(),
+            value: Arc::new(Mutex::new(value)),
+            is_notifying: Arc::new(Mutex::new(is_notifying)),
+            flags: Arc::new(Mutex::new(flags)),
+            gatt_descriptors: Arc::new(Mutex::new(gatt_descriptors)),
         });
-        let _ = Arc::make_mut(&mut characteristic.service.clone()).add_characteristic(characteristic.clone());
+        let _ = service.add_characteristic(characteristic.clone());
         characteristic
     }
 
@@ -40,7 +44,7 @@ impl FakeBluetoothGATTCharacteristic {
                      characteristic_id: String)
                      -> Arc<FakeBluetoothGATTCharacteristic> {
         FakeBluetoothGATTCharacteristic::new(
-            /*id*/ service.get_id() + &characteristic_id,
+            /*id*/ characteristic_id,
             /*uuid*/ String::new(),
             /*service*/ service,
             /*value*/ vec!(),
@@ -50,76 +54,71 @@ impl FakeBluetoothGATTCharacteristic {
         )
     }
 
-    pub fn get_id(&self) -> String {
-        self.id.clone()
-    }
+    make_getter!(get_id, id);
 
-    pub fn set_id(&mut self, path: String) {
-        self.id = path;
-    }
+    make_setter!(set_id, id);
 
-    pub fn get_uuid(&self) -> Result<String, Box<Error>> {
-        Ok(self.uuid.clone())
-    }
+    make_getter!(get_uuid, uuid, String);
 
-    pub fn set_uuid(&mut self, uuid: String) -> Result<(), Box<Error>> {
-        Ok(self.uuid = uuid)
-    }
+    make_setter!(set_uuid, uuid, String);
 
     pub fn get_service(&self) -> Result<Arc<FakeBluetoothGATTService>, Box<Error>> {
         Ok(self.service.clone())
     }
 
-    pub fn set_service(&mut self, service: Arc<FakeBluetoothGATTService>) -> Result<(), Box<Error>> {
+    /*pub fn set_service(&self, service: Arc<FakeBluetoothGATTService>) -> Result<(), Box<Error>> {
         Ok(self.service = service)
+    }*/
+
+    make_getter!(get_value, value, Vec<u8>);
+
+    make_setter!(set_value, value, Vec<u8>);
+
+    make_getter!(is_notifying);
+
+    make_setter!(set_notifying, is_notifying, bool);
+
+    pub fn start_notify(&self) -> Result<(), Box<Error>> {
+        self.set_notifying(true)
     }
 
-    pub fn get_value(&self) -> Result<Vec<u8>, Box<Error>> {
-        Ok(self.value.clone())
+    pub fn stop_notify(&self) -> Result<(), Box<Error>> {
+        self.set_notifying(false)
     }
 
-    pub fn set_value(&mut self, value: Vec<u8>) -> Result<(), Box<Error>> {
-        Ok(self.value = value)
+    make_getter!(get_flags, flags, Vec<String>);
+
+    make_setter!(set_flags, flags, Vec<String>);
+
+    make_getter!(get_gatt_descriptors, gatt_descriptors, Vec<Arc<FakeBluetoothGATTDescriptor>>);
+
+    make_setter!(set_gatt_descriptors, gatt_descriptors, Vec<Arc<FakeBluetoothGATTDescriptor>>);
+
+    pub fn get_gatt_descriptor(&self, id: String) -> Result<Arc<FakeBluetoothGATTDescriptor>, Box<Error>> {
+        let descriptors = try!(self.get_gatt_descriptors());
+        for descriptor in descriptors {
+            let descriptor_id = descriptor.get_id();
+            if descriptor_id == id {
+                return Ok(descriptor);
+            }
+        }
+        Err(Box::from("No descriptor exists with the given id."))
     }
 
-    pub fn is_notifying(&self) -> Result<bool, Box<Error>> {
-        Ok(self.is_notifying)
-    }
-
-    pub fn start_notify(&mut self) -> Result<(), Box<Error>> {
-        Ok(self.is_notifying = true)
-    }
-
-    pub fn stop_notify(&mut self) -> Result<(), Box<Error>> {
-        Ok(self.is_notifying = false)
-    }
-
-    pub fn get_flags(&self) -> Result<Vec<String>, Box<Error>> {
-        Ok(self.flags.clone())
-    }
-
-    pub fn set_flags(&mut self, flags: Vec<String>) -> Result<(), Box<Error>> {
-        Ok(self.flags = flags)
-    }
-
-    pub fn get_gatt_descriptors(&self) -> Result<Vec<Arc<FakeBluetoothGATTDescriptor>>, Box<Error>> {
-        Ok(self.gatt_descriptors.clone())
-    }
-
-    pub fn set_gatt_descriptors(&mut self, gatt_descriptors: Vec<Arc<FakeBluetoothGATTDescriptor>>) -> Result<(), Box<Error>> {
-        Ok(self.gatt_descriptors = gatt_descriptors)
-    }
-
-    pub fn add_descriptor(&mut self, descriptor: Arc<FakeBluetoothGATTDescriptor>) -> Result<(), Box<Error>> {
-        Ok(self.gatt_descriptors.push(descriptor))
+    pub fn add_descriptor(&self, descriptor: Arc<FakeBluetoothGATTDescriptor>) -> Result<(), Box<Error>> {
+        let cloned = self.gatt_descriptors.clone();
+        let mut gatt_descriptors = match cloned.lock() {
+            Ok(guard) => guard,
+            Err(_) => return Err(Box::from("Could not get the value.")),
+        };
+        Ok(gatt_descriptors.push(descriptor))
     }
 
     pub fn read_value(&self) -> Result<Vec<u8>, Box<Error>> {
         self.get_value()
     }
 
-    // Try some other workout if &mut self not works!
-    pub fn write_value(&mut self, value: Vec<u8>) -> Result<(), Box<Error>> {
+    pub fn write_value(&self, value: Vec<u8>) -> Result<(), Box<Error>> {
         self.set_value(value)
     }
 }
