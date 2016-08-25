@@ -142,6 +142,15 @@ impl FakeBluetoothDevice {
 
     make_setter!(set_uuids, uuids, Vec<String>);
 
+    /*pub fn add_uuid(&self, uuid: String) -> Result<(), Box<Error>> {
+        let mut uuids = try!(self.get_uuids());
+        if uuids.contains(&uuid) {
+            return Ok(())
+        }
+        uuids.push(uuid);
+        self.set_uuids(uuids)
+    }*/
+
     make_getter!(is_paired);
 
     make_setter!(set_paired, is_paired, bool);

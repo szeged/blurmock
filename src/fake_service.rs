@@ -96,4 +96,16 @@ impl FakeBluetoothGATTService {
 
     make_getter!(get_uuid, uuid, String);
 
-    make_setter!(set_uuid, uuid, String);}
+    make_setter!(set_uuid, uuid, String);
+
+    /*pub fn set_uuid(&self, value: String) -> Result<(), Box<Error>> {
+        let cloned = self.uuid.clone();
+        let mut uuid = match cloned.lock() {
+            Ok(guard) => guard,
+            Err(_) => return Err(Box::from("Could not get the value.")),
+        };
+        let device = try!(self.get_device());
+        try!(device.add_uuid(value.clone()));
+        Ok(*uuid = value)
+    }*/
+}
