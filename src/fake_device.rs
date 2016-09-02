@@ -236,7 +236,18 @@ impl FakeBluetoothDevice {
 
     make_setter!(set_tx_power, tx_power, i16);
 
-    make_getter!(get_gatt_services, gatt_services, Vec<Arc<FakeBluetoothGATTService>>);
+    pub fn get_gatt_services(&self) -> Result<Vec<Arc<FakeBluetoothGATTService>>, Box<Error>> {
+        if !(try!(self.is_connected())) {
+            return Err(Box::from("Device not connected."));
+        }
+
+        let cloned = self.gatt_services.clone();
+        let gatt_services = match cloned.lock() {
+            Ok(guard) => guard.deref().clone(),
+            Err(_) => return Err(Box::from("Could not get the value.")),
+        };
+        Ok(gatt_services)
+    }
 
     make_setter!(set_gatt_services, gatt_services, Vec<Arc<FakeBluetoothGATTService>>);
 
