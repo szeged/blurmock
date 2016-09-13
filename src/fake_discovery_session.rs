@@ -23,7 +23,7 @@ impl FakeBluetoothDiscoverySession {
     }
 
     pub fn start_discovery(&self) -> Result<(), Box<Error>> {
-        match self.adapter.is_discoverable() {
+        match self.adapter.get_can_start_discovery() {
             Ok(false) => Err(Box::from("Failed to start discovery session")),
             Ok(true) => Ok(()),
             Err(err) => Err(err),
@@ -31,6 +31,10 @@ impl FakeBluetoothDiscoverySession {
     }
 
     pub fn stop_discovery(&self) -> Result<(), Box<Error>> {
-        Ok(())
+        match self.adapter.get_can_stop_discovery() {
+            Ok(false) => Err(Box::from("Failed to stop discovery session")),
+            Ok(true) => Ok(()),
+            Err(err) => Err(err),
+        }
     }
 }

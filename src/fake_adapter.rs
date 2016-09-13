@@ -74,8 +74,8 @@ impl FakeBluetoothAdapter {
             /*id*/ String::new(),
             /*is_present*/ true,
             /*is_powered*/ false,
-            /*can_start_discovery*/ false,
-            /*can_stop_discovery*/ false,
+            /*can_start_discovery*/ true,
+            /*can_stop_discovery*/ true,
             /*devices*/ vec![],
             /*ad_datas*/ vec![],
             /*address*/ String::new(),
@@ -108,7 +108,7 @@ impl FakeBluetoothAdapter {
 
     make_setter!(set_can_start_discovery, can_start_discovery, bool);
 
-    make_getter!(get_can_stop_siscovery, can_stop_discovery, bool);
+    make_getter!(get_can_stop_discovery, can_stop_discovery, bool);
 
     make_setter!(set_can_stop_discovery, can_stop_discovery, bool);
 
