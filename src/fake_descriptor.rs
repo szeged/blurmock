@@ -57,10 +57,6 @@ impl FakeBluetoothGATTDescriptor {
         Ok(self.characteristic.clone())
     }
 
-   /* pub fn set_characteristic(&self, characteristic: Arc<FakeBluetoothGATTCharacteristic>) -> Result<(), Box<Error>> {
-        Ok(self.characteristic = characteristic)
-    }*/
-
     make_getter!(get_value, value, Vec<u8>);
 
     make_setter!(set_value, value, Vec<u8>);

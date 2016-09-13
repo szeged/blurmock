@@ -114,10 +114,6 @@ impl FakeBluetoothDevice {
         Ok(self.adapter.clone())
     }
 
-    /*pub fn set_adapter(&self, adapter: Arc<FakeBluetoothAdapter>) -> Result<(), Box<Error>> {
-        Ok(self.adapter = adapter)
-    }*/
-
     make_getter!(get_address, address, String);
 
     make_setter!(set_address, address, String);
@@ -141,15 +137,6 @@ impl FakeBluetoothDevice {
     make_getter!(get_uuids, uuids, Vec<String>);
 
     make_setter!(set_uuids, uuids, Vec<String>);
-
-    /*pub fn add_uuid(&self, uuid: String) -> Result<(), Box<Error>> {
-        let mut uuids = try!(self.get_uuids());
-        if uuids.contains(&uuid) {
-            return Ok(())
-        }
-        uuids.push(uuid);
-        self.set_uuids(uuids)
-    }*/
 
     make_getter!(is_paired);
 
@@ -236,7 +223,20 @@ impl FakeBluetoothDevice {
 
     make_setter!(set_tx_power, tx_power, i16);
 
-    pub fn get_gatt_services(&self) -> Result<Vec<Arc<FakeBluetoothGATTService>>, Box<Error>> {
+    pub fn get_gatt_services(&self) -> Result<Vec<String>, Box<Error>> {
+        if !(try!(self.is_connected())) {
+            return Err(Box::from("Device not connected."));
+        }
+
+        let cloned = self.gatt_services.clone();
+        let gatt_services = match cloned.lock() {
+            Ok(guard) => guard.deref().clone(),
+            Err(_) => return Err(Box::from("Could not get the value.")),
+        };
+        Ok(gatt_services.into_iter().map(|s| s.get_id()).collect())
+    }
+
+    pub fn get_gatt_service_structs(&self) -> Result<Vec<Arc<FakeBluetoothGATTService>>, Box<Error>> {
         if !(try!(self.is_connected())) {
             return Err(Box::from("Device not connected."));
         }
@@ -252,7 +252,7 @@ impl FakeBluetoothDevice {
     make_setter!(set_gatt_services, gatt_services, Vec<Arc<FakeBluetoothGATTService>>);
 
     pub fn get_gatt_service(&self, id: String) -> Result<Arc<FakeBluetoothGATTService>, Box<Error>> {
-        let services = try!(self.get_gatt_services());
+        let services = try!(self.get_gatt_service_structs());
         for service in services {
             let service_id = service.get_id();
             if service_id == id {

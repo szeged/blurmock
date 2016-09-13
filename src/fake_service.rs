@@ -58,16 +58,21 @@ impl FakeBluetoothGATTService {
         Ok(self.device.clone())
     }
 
-    /*pub fn set_device(&self, device: Arc<FakeBluetoothDevice>) -> Result<(), Box<Error>> {
-        Ok(self.device = device)
-    }*/
-
-    make_getter!(get_gatt_characteristics, gatt_characteristics, Vec<Arc<FakeBluetoothGATTCharacteristic>>);
+    make_getter!(get_gatt_characteristic_structs, gatt_characteristics, Vec<Arc<FakeBluetoothGATTCharacteristic>>);
 
     make_setter!(set_gatt_characteristics, gatt_characteristics, Vec<Arc<FakeBluetoothGATTCharacteristic>>);
 
+    pub fn get_gatt_characteristics(&self) -> Result<Vec<String>, Box<Error>> {
+        let cloned = self.gatt_characteristics.clone();
+        let gatt_characteristics = match cloned.lock() {
+            Ok(guard) => guard.deref().clone(),
+            Err(_) => return Err(Box::from("Could not get the value.")),
+        };
+        Ok(gatt_characteristics.into_iter().map(|s| s.get_id()).collect())
+    }
+
     pub fn get_gatt_characteristic(&self, id: String) -> Result<Arc<FakeBluetoothGATTCharacteristic>, Box<Error>> {
-        let characteristics = try!(self.get_gatt_characteristics());
+        let characteristics = try!(self.get_gatt_characteristic_structs());
         for characteristic in characteristics {
             let characteristic_id = characteristic.get_id();
             if characteristic_id == id {
@@ -90,7 +95,14 @@ impl FakeBluetoothGATTService {
 
     make_setter!(set_is_primary, is_primary, bool);
 
-    make_getter!(get_includes, included_services, Vec<Arc<FakeBluetoothGATTService>>);
+    pub fn get_includes(&self) -> Result<Vec<String>, Box<Error>> {
+        let cloned = self.included_services.clone();
+        let included_services = match cloned.lock() {
+            Ok(guard) => guard.deref().clone(),
+            Err(_) => return Err(Box::from("Could not get the value.")),
+        };
+        Ok(included_services.into_iter().map(|s| s.get_id()).collect())
+    }
 
     make_setter!(set_includes, included_services, Vec<Arc<FakeBluetoothGATTService>>);
 
@@ -98,14 +110,4 @@ impl FakeBluetoothGATTService {
 
     make_setter!(set_uuid, uuid, String);
 
-    /*pub fn set_uuid(&self, value: String) -> Result<(), Box<Error>> {
-        let cloned = self.uuid.clone();
-        let mut uuid = match cloned.lock() {
-            Ok(guard) => guard,
-            Err(_) => return Err(Box::from("Could not get the value.")),
-        };
-        let device = try!(self.get_device());
-        try!(device.add_uuid(value.clone()));
-        Ok(*uuid = value)
-    }*/
 }

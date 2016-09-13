@@ -66,10 +66,6 @@ impl FakeBluetoothGATTCharacteristic {
         Ok(self.service.clone())
     }
 
-    /*pub fn set_service(&self, service: Arc<FakeBluetoothGATTService>) -> Result<(), Box<Error>> {
-        Ok(self.service = service)
-    }*/
-
     make_getter!(get_value, value, Vec<u8>);
 
     make_setter!(set_value, value, Vec<u8>);
@@ -90,12 +86,21 @@ impl FakeBluetoothGATTCharacteristic {
 
     make_setter!(set_flags, flags, Vec<String>);
 
-    make_getter!(get_gatt_descriptors, gatt_descriptors, Vec<Arc<FakeBluetoothGATTDescriptor>>);
+    make_getter!(get_gatt_descriptor_structs, gatt_descriptors, Vec<Arc<FakeBluetoothGATTDescriptor>>);
 
     make_setter!(set_gatt_descriptors, gatt_descriptors, Vec<Arc<FakeBluetoothGATTDescriptor>>);
 
+    pub fn get_gatt_descriptors(&self) -> Result<Vec<String>, Box<Error>> {
+        let cloned = self.gatt_descriptors.clone();
+        let gatt_descriptors = match cloned.lock() {
+            Ok(guard) => guard.deref().clone(),
+            Err(_) => return Err(Box::from("Could not get the value.")),
+        };
+        Ok(gatt_descriptors.into_iter().map(|s| s.get_id()).collect())
+    }
+
     pub fn get_gatt_descriptor(&self, id: String) -> Result<Arc<FakeBluetoothGATTDescriptor>, Box<Error>> {
-        let descriptors = try!(self.get_gatt_descriptors());
+        let descriptors = try!(self.get_gatt_descriptor_structs());
         for descriptor in descriptors {
             let descriptor_id = descriptor.get_id();
             if descriptor_id == id {
