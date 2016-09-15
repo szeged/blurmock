@@ -110,10 +110,6 @@ impl FakeBluetoothDevice {
 
     make_setter!(set_id, id);
 
-    pub fn get_adapter(&self) -> Result<Arc<FakeBluetoothAdapter>, Box<Error>> {
-        Ok(self.adapter.clone())
-    }
-
     make_getter!(get_address, address, String);
 
     make_setter!(set_address, address, String);
@@ -142,14 +138,6 @@ impl FakeBluetoothDevice {
 
     make_setter!(set_paired, is_paired, bool);
 
-    pub fn pair(&self) -> Result<(), Box<Error>> {
-        self.set_paired(true)
-    }
-
-    pub fn cancel_pairing(&self) -> Result<(), Box<Error>> {
-        self.set_paired(false)
-    }
-
     make_getter!(is_connectable);
 
     make_setter!(set_connectable, is_connectable, bool);
@@ -174,6 +162,30 @@ impl FakeBluetoothDevice {
 
     make_setter!(set_legacy_pairing, is_legacy_pairing, bool);
 
+    make_setter!(set_modalias, modalias, String);
+
+    make_getter!(get_rssi, rssi, i16);
+
+    make_setter!(set_rssi, rssi, i16);
+
+    make_getter!(get_tx_power, tx_power, i16);
+
+    make_setter!(set_tx_power, tx_power, i16);
+
+    make_setter!(set_gatt_services, gatt_services, Vec<Arc<FakeBluetoothGATTService>>);
+
+    pub fn get_adapter(&self) -> Result<Arc<FakeBluetoothAdapter>, Box<Error>> {
+        Ok(self.adapter.clone())
+    }
+
+    pub fn pair(&self) -> Result<(), Box<Error>> {
+        self.set_paired(true)
+    }
+
+    pub fn cancel_pairing(&self) -> Result<(), Box<Error>> {
+        self.set_paired(false)
+    }
+
     pub fn get_modalias(&self) ->  Result<(String, u32, u32, u32), Box<Error>> {
         let cloned = self.modalias.clone();
         let modalias = match cloned.lock() {
@@ -192,8 +204,6 @@ impl FakeBluetoothDevice {
         (product[0] as u32) * 16 * 16 + (product[1] as u32),
         (device[0] as u32) * 16 * 16 + (device[1] as u32)))
     }
-
-    make_setter!(set_modalias, modalias, String);
 
     pub fn get_vendor_id_source(&self) -> Result<String, Box<Error>> {
         let (vendor_id_source,_,_,_) = try!(self.get_modalias());
@@ -214,14 +224,6 @@ impl FakeBluetoothDevice {
         let (_,_,_,device_id) = try!(self.get_modalias());
         Ok(device_id)
     }
-
-    make_getter!(get_rssi, rssi, i16);
-
-    make_setter!(set_rssi, rssi, i16);
-
-    make_getter!(get_tx_power, tx_power, i16);
-
-    make_setter!(set_tx_power, tx_power, i16);
 
     pub fn get_gatt_services(&self) -> Result<Vec<String>, Box<Error>> {
         if !(try!(self.is_connected())) {
@@ -248,8 +250,6 @@ impl FakeBluetoothDevice {
         };
         Ok(gatt_services)
     }
-
-    make_setter!(set_gatt_services, gatt_services, Vec<Arc<FakeBluetoothGATTService>>);
 
     pub fn get_gatt_service(&self, id: String) -> Result<Arc<FakeBluetoothGATTService>, Box<Error>> {
         let services = try!(self.get_gatt_service_structs());

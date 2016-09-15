@@ -53,10 +53,6 @@ impl FakeBluetoothGATTDescriptor {
 
     make_setter!(set_uuid, uuid, String);
 
-    pub fn get_characteristic(&self) -> Result<Arc<FakeBluetoothGATTCharacteristic>, Box<Error>> {
-        Ok(self.characteristic.clone())
-    }
-
     make_getter!(get_value, value, Vec<u8>);
 
     make_setter!(set_value, value, Vec<u8>);
@@ -64,6 +60,10 @@ impl FakeBluetoothGATTDescriptor {
     make_getter!(get_flags, flags, Vec<String>);
 
     make_setter!(set_flags, flags, Vec<String>);
+
+    pub fn get_characteristic(&self) -> Result<Arc<FakeBluetoothGATTCharacteristic>, Box<Error>> {
+        Ok(self.characteristic.clone())
+    }
 
     pub fn read_value(&self) -> Result<Vec<u8>, Box<Error>> {
         self.get_value()

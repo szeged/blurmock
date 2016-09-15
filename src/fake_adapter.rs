@@ -116,6 +116,52 @@ impl FakeBluetoothAdapter {
 
     make_setter!(set_devices, devices, Vec<Arc<FakeBluetoothDevice>>);
 
+    make_getter!(get_ad_datas, ad_datas, Vec<String>);
+
+    make_setter!(set_ad_datas, ad_datas, Vec<String>);
+
+    make_getter!(get_address, address, String);
+
+    make_setter!(set_address, address, String);
+
+    make_getter!(get_name, name, String);
+
+    make_setter!(set_name, name, String);
+
+    make_getter!(get_alias, alias, String);
+
+    make_setter!(set_alias, alias, String);
+
+    make_getter!(get_class, class, u32);
+
+    make_setter!(set_class, class, u32);
+
+    make_getter!(is_discoverable);
+
+    make_setter!(set_discoverable, is_discoverable, bool);
+
+    make_getter!(is_pairable);
+
+    make_setter!(set_pairable, is_pairable, bool);
+
+    make_getter!(get_pairable_timeout, pairable_timeout, u32);
+
+    make_setter!(set_pairable_timeout, pairable_timeout, u32);
+
+    make_getter!(get_discoverable_timeout, discoverable_timeout, u32);
+
+    make_setter!(set_discoverable_timeout, discoverable_timeout, u32);
+
+    make_getter!(is_discovering);
+
+    make_setter!(set_discovering, is_discovering, bool);
+
+    make_getter!(get_uuids, uuids, Vec<String>);
+
+    make_setter!(set_uuids, uuids, Vec<String>);
+
+    make_setter!(set_modalias, modalias, String);
+
     pub fn get_device(&self, id: String) -> Result<Arc<FakeBluetoothDevice>, Box<Error>> {
         let devices = try!(self.get_devices());
         for device in devices {
@@ -154,10 +200,6 @@ impl FakeBluetoothAdapter {
         Ok(devices.push(device))
     }
 
-    make_getter!(get_ad_datas, ad_datas, Vec<String>);
-
-    make_setter!(set_ad_datas, ad_datas, Vec<String>);
-
     pub fn get_first_ad_data(&self) -> Result<String, Box<Error>> {
         let ad_datas = try!(self.get_ad_datas());
         if ad_datas.is_empty() {
@@ -166,49 +208,9 @@ impl FakeBluetoothAdapter {
         Ok(ad_datas[0].clone())
     }
 
-    make_getter!(get_address, address, String);
-
-    make_setter!(set_address, address, String);
-
-    make_getter!(get_name, name, String);
-
-    make_setter!(set_name, name, String);
-
      pub fn create_discovery_session(&self) -> Result<FakeBluetoothDiscoverySession, Box<Error>> {
         FakeBluetoothDiscoverySession::create_session(Arc::new(self.clone()))
     }
-
-    make_getter!(get_alias, alias, String);
-
-    make_setter!(set_alias, alias, String);
-
-    make_getter!(get_class, class, u32);
-
-    make_setter!(set_class, class, u32);
-
-    make_getter!(is_discoverable);
-
-    make_setter!(set_discoverable, is_discoverable, bool);
-
-    make_getter!(is_pairable);
-
-    make_setter!(set_pairable, is_pairable, bool);
-
-    make_getter!(get_pairable_timeout, pairable_timeout, u32);
-
-    make_setter!(set_pairable_timeout, pairable_timeout, u32);
-
-    make_getter!(get_discoverable_timeout, discoverable_timeout, u32);
-
-    make_setter!(set_discoverable_timeout, discoverable_timeout, u32);
-
-    make_getter!(is_discovering);
-
-    make_setter!(set_discovering, is_discovering, bool);
-
-    make_getter!(get_uuids, uuids, Vec<String>);
-
-    make_setter!(set_uuids, uuids, Vec<String>);
 
     pub fn get_modalias(&self) ->  Result<(String, u32, u32, u32), Box<Error>> {
         let cloned = self.modalias.clone();
@@ -228,8 +230,6 @@ impl FakeBluetoothAdapter {
         (product[0] as u32) * 16 * 16 + (product[1] as u32),
         (device[0] as u32) * 16 * 16 + (device[1] as u32)))
     }
-
-    make_setter!(set_modalias, modalias, String);
 
     pub fn get_vendor_id_source(&self) -> Result<String, Box<Error>> {
         let (vendor_id_source,_,_,_) = try!(self.get_modalias());

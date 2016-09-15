@@ -62,10 +62,6 @@ impl FakeBluetoothGATTCharacteristic {
 
     make_setter!(set_uuid, uuid, String);
 
-    pub fn get_service(&self) -> Result<Arc<FakeBluetoothGATTService>, Box<Error>> {
-        Ok(self.service.clone())
-    }
-
     make_getter!(get_value, value, Vec<u8>);
 
     make_setter!(set_value, value, Vec<u8>);
@@ -74,14 +70,6 @@ impl FakeBluetoothGATTCharacteristic {
 
     make_setter!(set_notifying, is_notifying, bool);
 
-    pub fn start_notify(&self) -> Result<(), Box<Error>> {
-        self.set_notifying(true)
-    }
-
-    pub fn stop_notify(&self) -> Result<(), Box<Error>> {
-        self.set_notifying(false)
-    }
-
     make_getter!(get_flags, flags, Vec<String>);
 
     make_setter!(set_flags, flags, Vec<String>);
@@ -89,6 +77,18 @@ impl FakeBluetoothGATTCharacteristic {
     make_getter!(get_gatt_descriptor_structs, gatt_descriptors, Vec<Arc<FakeBluetoothGATTDescriptor>>);
 
     make_setter!(set_gatt_descriptors, gatt_descriptors, Vec<Arc<FakeBluetoothGATTDescriptor>>);
+
+    pub fn get_service(&self) -> Result<Arc<FakeBluetoothGATTService>, Box<Error>> {
+        Ok(self.service.clone())
+    }
+
+    pub fn start_notify(&self) -> Result<(), Box<Error>> {
+        self.set_notifying(true)
+    }
+
+    pub fn stop_notify(&self) -> Result<(), Box<Error>> {
+        self.set_notifying(false)
+    }
 
     pub fn get_gatt_descriptors(&self) -> Result<Vec<String>, Box<Error>> {
         let cloned = self.gatt_descriptors.clone();
