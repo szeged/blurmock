@@ -10,7 +10,7 @@ pub struct FakeBluetoothDevice {
     id: Arc<Mutex<String>>,
     adapter: Arc<FakeBluetoothAdapter>,
     address: Arc<Mutex<String>>,
-    appearance: Arc<Mutex<u16>>,
+    appearance: Arc<Mutex<Option<u16>>>,
     class: Arc<Mutex<u32>>,
     gatt_services: Arc<Mutex<Vec<Arc<FakeBluetoothGATTService>>>>,
     is_paired: Arc<Mutex<bool>>,
@@ -20,12 +20,12 @@ pub struct FakeBluetoothDevice {
     is_blocked: Arc<Mutex<bool>>,
     is_legacy_pairing: Arc<Mutex<bool>>,
     uuids: Arc<Mutex<Vec<String>>>,
-    name: Arc<Mutex<String>>,
+    name: Arc<Mutex<Option<String>>>,
     icon: Arc<Mutex<String>>,
     alias: Arc<Mutex<String>>,
     product_version: Arc<Mutex<u32>>,
-    rssi: Arc<Mutex<i16>>,
-    tx_power: Arc<Mutex<i16>>,
+    rssi: Arc<Mutex<Option<i16>>>,
+    tx_power: Arc<Mutex<Option<i16>>>,
     modalias: Arc<Mutex<String>>,
 }
 
@@ -33,7 +33,7 @@ impl FakeBluetoothDevice {
     pub fn new(id: String,
                adapter: Arc<FakeBluetoothAdapter>,
                address: String,
-               appearance: u16,
+               appearance: Option<u16>,
                class: u32,
                gatt_services: Vec<Arc<FakeBluetoothGATTService>>,
                is_paired: bool,
@@ -43,12 +43,12 @@ impl FakeBluetoothDevice {
                is_blocked: bool,
                is_legacy_pairing: bool,
                uuids: Vec<String>,
-               name: String,
+               name: Option<String>,
                icon: String,
                alias: String,
                product_version: u32,
-               rssi: i16,
-               tx_power: i16,
+               rssi: Option<i16>,
+               tx_power: Option<i16>,
                modalias: String)
                -> Arc<FakeBluetoothDevice> {
         if let Ok(existing_device) = adapter.get_device(id.clone()) {
@@ -86,7 +86,7 @@ impl FakeBluetoothDevice {
             /*id*/ device_id,
             /*adapter*/ adapter,
             /*address*/ String::new(),
-            /*appearance*/ 0,
+            /*appearance*/ None,
             /*class*/ 0,
             /*gatt_services*/ vec!(),
             /*is_paired*/ false,
@@ -96,12 +96,12 @@ impl FakeBluetoothDevice {
             /*is_blocked*/ false,
             /*is_legacy_pairing*/ false,
             /*uuids*/ vec!(),
-            /*name*/ String::new(),
+            /*name*/ None,
             /*icon*/ String::new(),
             /*alias*/ String::new(),
             /*product_version*/ 0,
-            /*rssi*/ 0,
-            /*tx_power*/ 0,
+            /*rssi*/ None,
+            /*tx_power*/ None,
             /*modalias*/ String::new(),
         )
     }
@@ -114,9 +114,9 @@ impl FakeBluetoothDevice {
 
     make_setter!(set_address, address, String);
 
-    make_getter!(get_name, name, String);
+    make_option_getter!(get_name, name, String);
 
-    make_setter!(set_name, name, String);
+    make_setter!(set_name, name, Option<String>);
 
     make_getter!(get_icon, icon, String);
 
@@ -126,9 +126,9 @@ impl FakeBluetoothDevice {
 
     make_setter!(set_class, class, u32);
 
-    make_getter!(get_appearance, appearance, u16);
+    make_option_getter!(get_appearance, appearance, u16);
 
-    make_setter!(set_appearance, appearance, u16);
+    make_setter!(set_appearance, appearance, Option<u16>);
 
     make_getter!(get_uuids, uuids, Vec<String>);
 
@@ -164,13 +164,13 @@ impl FakeBluetoothDevice {
 
     make_setter!(set_modalias, modalias, String);
 
-    make_getter!(get_rssi, rssi, i16);
+    make_option_getter!(get_rssi, rssi, i16);
 
-    make_setter!(set_rssi, rssi, i16);
+    make_setter!(set_rssi, rssi, Option<i16>);
 
-    make_getter!(get_tx_power, tx_power, i16);
+    make_option_getter!(get_tx_power, tx_power, i16);
 
-    make_setter!(set_tx_power, tx_power, i16);
+    make_setter!(set_tx_power, tx_power, Option<i16>);
 
     make_setter!(set_gatt_services, gatt_services, Vec<Arc<FakeBluetoothGATTService>>);
 

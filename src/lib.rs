@@ -36,6 +36,22 @@ macro_rules! make_getter(
     };
 );
 
+macro_rules! make_option_getter(
+    ($function_name: ident, $attr: ident, $ret_type:ty) => {
+        pub fn $function_name(&self) -> Result<$ret_type, Box<Error>> {
+            let cloned = self.$attr.clone();
+            let attr_value = match cloned.lock() {
+                Ok(guard) => guard.deref().clone(),
+                Err(_) => return Err(Box::from("Could not get the value.")),
+            };
+            match attr_value {
+                Some(value) => return Ok(value),
+                None => return Err(Box::from("Could not get the value.")),
+            }
+        }
+    };
+);
+
 macro_rules! make_setter(
     ($function_name: ident, $attr: ident, $attr_type:ty ) => {
         pub fn $function_name(&self, value: $attr_type) -> Result<(), Box<Error>> {

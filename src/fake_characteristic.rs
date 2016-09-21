@@ -9,7 +9,7 @@ pub struct FakeBluetoothGATTCharacteristic {
     id: Arc<Mutex<String>>,
     uuid: Arc<Mutex<String>>,
     service: Arc<FakeBluetoothGATTService>,
-    value: Arc<Mutex<Vec<u8>>>,
+    value: Arc<Mutex<Option<Vec<u8>>>>,
     is_notifying: Arc<Mutex<bool>>,
     flags: Arc<Mutex<Vec<String>>>,
     gatt_descriptors: Arc<Mutex<Vec<Arc<FakeBluetoothGATTDescriptor>>>>,
@@ -19,7 +19,7 @@ impl FakeBluetoothGATTCharacteristic {
     pub fn new(id: String,
                uuid: String,
                service: Arc<FakeBluetoothGATTService>,
-               value: Vec<u8>,
+               value: Option<Vec<u8>>,
                is_notifying: bool,
                flags: Vec<String>,
                gatt_descriptors: Vec<Arc<FakeBluetoothGATTDescriptor>>)
@@ -47,7 +47,7 @@ impl FakeBluetoothGATTCharacteristic {
             /*id*/ characteristic_id,
             /*uuid*/ String::new(),
             /*service*/ service,
-            /*value*/ vec!(),
+            /*value*/ None,
             /*is_notifying*/ false,
             /*flags*/ vec!(),
             /*gatt_descriptors*/ vec!(),
@@ -62,9 +62,9 @@ impl FakeBluetoothGATTCharacteristic {
 
     make_setter!(set_uuid, uuid, String);
 
-    make_getter!(get_value, value, Vec<u8>);
+    make_option_getter!(get_value, value, Vec<u8>);
 
-    make_setter!(set_value, value, Vec<u8>);
+    make_setter!(set_value, value, Option<Vec<u8>>);
 
     make_getter!(is_notifying);
 
@@ -124,6 +124,6 @@ impl FakeBluetoothGATTCharacteristic {
     }
 
     pub fn write_value(&self, value: Vec<u8>) -> Result<(), Box<Error>> {
-        self.set_value(value)
+        self.set_value(Some(value))
     }
 }

@@ -8,7 +8,7 @@ pub struct FakeBluetoothGATTDescriptor {
     id: Arc<Mutex<String>>,
     uuid: Arc<Mutex<String>>,
     characteristic: Arc<FakeBluetoothGATTCharacteristic>,
-    value: Arc<Mutex<Vec<u8>>>,
+    value: Arc<Mutex<Option<Vec<u8>>>>,
     flags: Arc<Mutex<Vec<String>>>,
 }
 
@@ -16,7 +16,7 @@ impl FakeBluetoothGATTDescriptor {
     pub fn new(id: String,
                uuid: String,
                characteristic: Arc<FakeBluetoothGATTCharacteristic>,
-               value: Vec<u8>,
+               value: Option<Vec<u8>>,
                flags: Vec<String>)
                -> Arc<FakeBluetoothGATTDescriptor> {
         if let Ok(existing_descriptor) = characteristic.get_gatt_descriptor(id.clone()) {
@@ -40,7 +40,7 @@ impl FakeBluetoothGATTDescriptor {
             /*id*/ descriptor_id,
             /*uuid*/ String::new(),
             /*characteristic*/ characteristic,
-            /*value*/ vec!(),
+            /*value*/ None,
             /*flags*/ vec!(),
         )
     }
@@ -53,9 +53,9 @@ impl FakeBluetoothGATTDescriptor {
 
     make_setter!(set_uuid, uuid, String);
 
-    make_getter!(get_value, value, Vec<u8>);
+    make_option_getter!(get_value, value, Vec<u8>);
 
-    make_setter!(set_value, value, Vec<u8>);
+    make_setter!(set_value, value, Option<Vec<u8>>);
 
     make_getter!(get_flags, flags, Vec<String>);
 
@@ -70,6 +70,6 @@ impl FakeBluetoothGATTDescriptor {
     }
 
     pub fn write_value(&self, value: Vec<u8>) -> Result<(), Box<Error>> {
-        self.set_value(value)
+        self.set_value(Some(value))
     }
 }
