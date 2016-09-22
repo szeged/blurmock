@@ -114,8 +114,6 @@ impl FakeBluetoothAdapter {
 
     make_getter!(get_devices, devices, Vec<Arc<FakeBluetoothDevice>>);
 
-    make_setter!(set_devices, devices, Vec<Arc<FakeBluetoothDevice>>);
-
     make_getter!(get_ad_datas, ad_datas, Vec<String>);
 
     make_setter!(set_ad_datas, ad_datas, Vec<String>);

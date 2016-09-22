@@ -76,8 +76,6 @@ impl FakeBluetoothGATTCharacteristic {
 
     make_getter!(get_gatt_descriptor_structs, gatt_descriptors, Vec<Arc<FakeBluetoothGATTDescriptor>>);
 
-    make_setter!(set_gatt_descriptors, gatt_descriptors, Vec<Arc<FakeBluetoothGATTDescriptor>>);
-
     pub fn get_service(&self) -> Result<Arc<FakeBluetoothGATTService>, Box<Error>> {
         Ok(self.service.clone())
     }

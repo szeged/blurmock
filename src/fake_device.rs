@@ -172,8 +172,6 @@ impl FakeBluetoothDevice {
 
     make_setter!(set_tx_power, tx_power, Option<i16>);
 
-    make_setter!(set_gatt_services, gatt_services, Vec<Arc<FakeBluetoothGATTService>>);
-
     pub fn get_adapter(&self) -> Result<Arc<FakeBluetoothAdapter>, Box<Error>> {
         Ok(self.adapter.clone())
     }

@@ -56,8 +56,6 @@ impl FakeBluetoothGATTService {
 
     make_getter!(get_gatt_characteristic_structs, gatt_characteristics, Vec<Arc<FakeBluetoothGATTCharacteristic>>);
 
-    make_setter!(set_gatt_characteristics, gatt_characteristics, Vec<Arc<FakeBluetoothGATTCharacteristic>>);
-
     make_getter!(is_primary);
 
     make_setter!(set_is_primary, is_primary, bool);
