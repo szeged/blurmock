@@ -99,6 +99,33 @@ impl FakeBluetoothGATTService {
         Ok(gatt_characteristics.push(characteristic))
     }
 
+    pub fn remove_characteristic(&self, id: String) -> Result<(), Box<Error>> {
+        let cloned = self.gatt_characteristics.clone();
+        let mut gatt_characteristics = match cloned.lock() {
+            Ok(guard) => guard,
+            Err(_) => return Err(Box::from("Could not get the value.")),
+        };
+        Ok(gatt_characteristics.retain(|c| c.get_id() != id))
+    }
+
+    pub fn add_included_service(&self, service: Arc<FakeBluetoothGATTService>) -> Result<(), Box<Error>> {
+        let cloned = self.included_services.clone();
+        let mut included_services = match cloned.lock() {
+            Ok(guard) => guard,
+            Err(_) => return Err(Box::from("Could not get the value.")),
+        };
+        Ok(included_services.push(service))
+    }
+
+    pub fn remove_included_service(&self, id: String) -> Result<(), Box<Error>> {
+        let cloned = self.included_services.clone();
+        let mut included_services = match cloned.lock() {
+            Ok(guard) => guard,
+            Err(_) => return Err(Box::from("Could not get the value.")),
+        };
+        Ok(included_services.retain(|i| i.get_id() != id))
+    }
+
     pub fn get_includes(&self) -> Result<Vec<String>, Box<Error>> {
         let cloned = self.included_services.clone();
         let included_services = match cloned.lock() {

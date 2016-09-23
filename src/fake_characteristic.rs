@@ -117,6 +117,15 @@ impl FakeBluetoothGATTCharacteristic {
         Ok(gatt_descriptors.push(descriptor))
     }
 
+    pub fn remove_descriptor(&self, id: String) -> Result<(), Box<Error>> {
+        let cloned = self.gatt_descriptors.clone();
+        let mut gatt_descriptors = match cloned.lock() {
+            Ok(guard) => guard,
+            Err(_) => return Err(Box::from("Could not get the value.")),
+        };
+        Ok(gatt_descriptors.retain(|d| d.get_id() != id))
+    }
+
     pub fn read_value(&self) -> Result<Vec<u8>, Box<Error>> {
         self.get_value()
     }

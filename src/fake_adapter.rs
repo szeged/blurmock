@@ -198,6 +198,15 @@ impl FakeBluetoothAdapter {
         Ok(devices.push(device))
     }
 
+    pub fn remove_device(&self, id: String) -> Result<(), Box<Error>> {
+        let cloned = self.devices.clone();
+        let mut devices = match cloned.lock() {
+            Ok(guard) => guard,
+            Err(_) => return Err(Box::from("Could not get the value.")),
+        };
+        Ok(devices.retain(|d| d.get_id() != id))
+    }
+
     pub fn get_first_ad_data(&self) -> Result<String, Box<Error>> {
         let ad_datas = try!(self.get_ad_datas());
         if ad_datas.is_empty() {

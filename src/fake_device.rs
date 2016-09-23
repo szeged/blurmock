@@ -269,6 +269,15 @@ impl FakeBluetoothDevice {
         Ok(gatt_services.push(service))
     }
 
+    pub fn remove_service(&self, id: String) -> Result<(), Box<Error>> {
+        let cloned = self.gatt_services.clone();
+        let mut gatt_services = match cloned.lock() {
+            Ok(guard) => guard,
+            Err(_) => return Err(Box::from("Could not get the value.")),
+        };
+        Ok(gatt_services.retain(|s| s.get_id() != id))
+    }
+
     pub fn connect_profile(&self, _uuid: String) -> Result<(), Box<Error>> {
         unimplemented!();
     }
