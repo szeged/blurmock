@@ -44,7 +44,7 @@ impl FakeBluetoothGATTService {
             /*id*/ service_id,
             /*device*/ device,
             /*gatt_characteristics*/ vec!(),
-            /*is_primary*/ false,
+            /*is_primary*/ true,
             /*included_services*/ vec!(),
             /*uuid*/ String::new(),
         )
