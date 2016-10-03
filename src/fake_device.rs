@@ -252,7 +252,8 @@ impl FakeBluetoothDevice {
     pub fn get_gatt_service(&self, id: String) -> Result<Arc<FakeBluetoothGATTService>, Box<Error>> {
         let services = try!(self.get_gatt_service_structs());
         for service in services {
-            if service.get_id() == id {
+            let service_id = service.get_id();
+            if service_id == id {
                 return Ok(service);
             }
         }
@@ -286,22 +287,24 @@ impl FakeBluetoothDevice {
     }
 
     pub fn connect(&self) -> Result<(), Box<Error>> {
-        if try!(self.is_connected()) {
+        let is_connectable = try!(self.is_connectable());
+        let is_connected = try!(self.is_connected());
+
+        if is_connected {
             return Ok(());
         }
-
-        if try!(self.is_connectable()) {
+        if is_connectable {
             return self.set_connected(true);
         }
-
         return Err(Box::from("Could not connect to the device."));
     }
 
     pub fn disconnect(&self) -> Result<(), Box<Error>>{
-        if try!(self.is_connected()) {
+        let is_connected = try!(self.is_connected());
+
+        if is_connected {
             return self.set_connected(false);
         }
-
         return Err(Box::from("The device is not connected."));
     }
 }
