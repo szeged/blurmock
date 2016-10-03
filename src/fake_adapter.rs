@@ -190,20 +190,12 @@ impl FakeBluetoothAdapter {
     }
 
     pub fn add_device(&self, device: Arc<FakeBluetoothDevice>) -> Result<(), Box<Error>> {
-        let cloned = self.devices.clone();
-        let mut devices = match cloned.lock() {
-            Ok(guard) => guard,
-            Err(_) => return Err(Box::from("Could not get the value.")),
-        };
+        let mut devices = try!(self.get_devices());
         Ok(devices.push(device))
     }
 
     pub fn remove_device(&self, id: String) -> Result<(), Box<Error>> {
-        let cloned = self.devices.clone();
-        let mut devices = match cloned.lock() {
-            Ok(guard) => guard,
-            Err(_) => return Err(Box::from("Could not get the value.")),
-        };
+        let mut devices = try!(self.get_devices());
         Ok(devices.retain(|d| d.get_id() != id))
     }
 
