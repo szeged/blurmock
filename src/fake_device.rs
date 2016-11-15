@@ -2,6 +2,7 @@ use core::ops::Deref;
 use fake_adapter::FakeBluetoothAdapter;
 use fake_service::FakeBluetoothGATTService;
 use rustc_serialize::hex::FromHex;
+use std::collections::HashMap;
 use std::error::Error;
 use std::sync::{Arc, Mutex};
 
@@ -27,6 +28,8 @@ pub struct FakeBluetoothDevice {
     rssi: Arc<Mutex<Option<i16>>>,
     tx_power: Arc<Mutex<Option<i16>>>,
     modalias: Arc<Mutex<String>>,
+    manufacturer_data: Arc<Mutex<Option<HashMap<u16, Vec<u8>>>>>,
+    service_data: Arc<Mutex<Option<HashMap<String, Vec<u8>>>>>,
 }
 
 impl FakeBluetoothDevice {
@@ -49,7 +52,9 @@ impl FakeBluetoothDevice {
                product_version: u32,
                rssi: Option<i16>,
                tx_power: Option<i16>,
-               modalias: String)
+               modalias: String,
+               manufacturer_data: Option<HashMap<u16, Vec<u8>>>,
+               service_data: Option<HashMap<String, Vec<u8>>>)
                -> Arc<FakeBluetoothDevice> {
         if let Ok(existing_device) = adapter.get_device(id.clone()) {
             return existing_device;
@@ -75,6 +80,8 @@ impl FakeBluetoothDevice {
             rssi: Arc::new(Mutex::new(rssi)),
             tx_power: Arc::new(Mutex::new(tx_power)),
             modalias: Arc::new(Mutex::new(modalias)),
+            manufacturer_data: Arc::new(Mutex::new(manufacturer_data)),
+            service_data: Arc::new(Mutex::new(service_data)),
         });
         let _ = adapter.add_device(device.clone());
         device
@@ -103,6 +110,8 @@ impl FakeBluetoothDevice {
             /*rssi*/ None,
             /*tx_power*/ None,
             /*modalias*/ String::new(),
+            /*manufacturer_data*/ None,
+            /*service_data*/ None,
         )
     }
 
@@ -171,6 +180,14 @@ impl FakeBluetoothDevice {
     make_option_getter!(get_tx_power, tx_power, i16);
 
     make_setter!(set_tx_power, tx_power, Option<i16>);
+
+    make_option_getter!(get_manufacturer_data, manufacturer_data, HashMap<u16, Vec<u8>>);
+
+    make_setter!(set_manufacturer_data, manufacturer_data, Option<HashMap<u16, Vec<u8>>>);
+
+    make_option_getter!(get_service_data, service_data, HashMap<String, Vec<u8>>);
+
+    make_setter!(set_service_data, service_data, Option<HashMap<String, Vec<u8>>>);
 
     pub fn get_adapter(&self) -> Result<Arc<FakeBluetoothAdapter>, Box<Error>> {
         Ok(self.adapter.clone())
