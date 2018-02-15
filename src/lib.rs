@@ -1,4 +1,4 @@
-extern crate rustc_serialize;
+extern crate hex;
 extern crate core;
 
 macro_rules! make_getter(

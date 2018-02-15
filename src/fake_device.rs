@@ -1,7 +1,7 @@
 use core::ops::Deref;
 use fake_adapter::FakeBluetoothAdapter;
 use fake_service::FakeBluetoothGATTService;
-use rustc_serialize::hex::FromHex;
+use hex;
 use std::collections::HashMap;
 use std::error::Error;
 use std::sync::{Arc, Mutex};
@@ -210,9 +210,9 @@ impl FakeBluetoothDevice {
 
         let ids: Vec<&str> = modalias.split(":").collect();
         let source = String::from(ids[0]);
-        let vendor = ids[1][1..5].from_hex().unwrap();
-        let product = ids[1][6..10].from_hex().unwrap();
-        let device = ids[1][11..15].from_hex().unwrap();
+        let vendor = hex::decode(&ids[1][1..5]).unwrap();
+        let product = hex::decode(&ids[1][6..10]).unwrap();
+        let device = hex::decode(&ids[1][11..15]).unwrap();
 
         Ok((source,
         (vendor[0] as u32) * 16 * 16 + (vendor[1] as u32),

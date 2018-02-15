@@ -1,6 +1,6 @@
 [package]
 name = "blurmock"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["Fokin Valentin <fokinv@inf.u-szeged.hu>", "Attila Dusnoki <adusnoki@inf.u-szeged.hu>", "Zakor Gyula <zakorgy@inf.u-szeged.hu>"]
 repository = "https://github.com/szeged/blurmock"
 description = "Bluetooth mock lib for Rust"
@@ -8,4 +8,4 @@ keywords = ["bluetooth", "ble", "fake", "mock", "test"]
 license = "BSD-2-Clause"
 
 [dependencies]
-rustc-serialize = "0.3"
+hex = "0.3"
